@@ -22,7 +22,7 @@ function populateFields() {
         const exampleInput = document.createElement('input');
         const checkbox = document.createElement('input');
         checkbox.type = 'checkbox';
-        checkbox.disabled = true;
+        checkbox.disabled = false;
         exampleInput.type = 'text';
         exampleInput.value = example || '';
         exampleInput.oninput = testRegex;
@@ -33,6 +33,13 @@ function populateFields() {
     });
 }
 
+document.getElementById('example-inputs').addEventListener('click', function (event) {
+    if (event.target.type === 'checkbox') {
+      // Check if the clicked element is a checkbox
+        event.preventDefault(); // Prevent checkbox change
+    }
+  });
+  
 // Function to test regex
 function testRegex() {
     const regexInput = document.getElementById('regex-input').value;

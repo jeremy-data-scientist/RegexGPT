@@ -86,12 +86,12 @@ header h1 {
 }
 
 /* Style for checked checkboxes */
-.form-group input[type="checkbox"]:checked:disabled {
+.form-group input[type="checkbox"]:disabled:checked {
     accent-color: green;
   }
   
 /* Style for input fields when the associated checkbox is checked */
-.form-group input[type="checkbox"]:checked:disabled + input {
+.form-group input[type="checkbox"]:disabled:checked + input {
 border: 2px solid green;
 background-color: #e6ffe6; /* Light green background */
 }

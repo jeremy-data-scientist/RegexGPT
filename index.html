@@ -16,12 +16,17 @@
                 <label for="regex-input">Enter your regex:</label>
                 <input type="text" id="regex-input" name="regex" placeholder="e.g., ^[a-z0-9]+@[a-z]+\.[a-z]{2,3}$" oninput="testRegex()">
             </div>
+            <div class="form-group">
+                <label><input type="checkbox" id="capture-group-toggle"> Show capture groups</label>
+            </div>
             <div class="form-group" id="example-inputs">
+                <label for="regex-input">Test your regex:</label>
                 <input type="text" class="example-input" id="example1" placeholder="example text to check" oninput="testRegex()">
                 <input type="text" class="example-input" id="example2" oninput="testRegex()">
                 <input type="text" class="example-input" id="example3" oninput="testRegex()">
                 <input type="text" class="example-input" id="example4" oninput="testRegex()">
             </div>
+            <div id="capture-groups-output"></div>
         </main>
         <footer>
             <p>&copy; 2023 Regex Tester</p>

@@ -95,6 +95,18 @@ header h1 {
     border: 2px solid green;
     background-color: #e6ffe6; /* Light green background */
   }
+
+/* Style for the capture groups output */
+#capture-groups-output {
+    margin-top: 10px;
+}
+
+/* Highlight for capture groups */
+.highlight {
+    background-color: yellow;
+    border-radius: 2px;
+}
+
 footer {
 	text-align: center;
 	margin-top: 20px;

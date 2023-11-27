@@ -21,6 +21,8 @@ function populateFields() {
             document.getElementById('example' + (index + 1)).value = example;
         }
     });
+    // Call testRegex after populating the fields to apply highlighting
+    testRegex();
 }
 
 document.getElementById('example-inputs').addEventListener('click', function (event) {
@@ -29,29 +31,64 @@ document.getElementById('example-inputs').addEventListener('click', function (ev
         event.preventDefault(); // Prevent checkbox change
     }
   });
-  
-// Function to test regex
+
+function updateRegex() {
+    const regexInput = document.getElementById('regex-input').value;
+    // Automatically check the 'Show capture groups' checkbox if the regex contains capture groups
+    const hasCaptureGroups = /\(.*?\)/.test(regexInput);
+    document.getElementById('capture-group-toggle').checked = hasCaptureGroups;
+    testRegex();
+}
+
 function testRegex() {
     const regexInput = document.getElementById('regex-input').value;
-    const exampleInputs = document.querySelectorAll('.example-input');
+    const showCaptureGroups = document.getElementById('capture-group-toggle').checked;
+    const captureGroupsOutput = document.getElementById('capture-groups-output');
+    captureGroupsOutput.innerHTML = ''; // Clear previous capture groups
+
     try {
         const regex = new RegExp(regexInput);
-        exampleInputs.forEach((input) => {
-            const matches = regex.test(input.value);
+        const exampleInputs = document.querySelectorAll('.example-input');
+
+        exampleInputs.forEach((input, index) => {
+            const matches = input.value.match(regex);
+            input.classList.remove('match');
+
             if (matches) {
-                input.classList.add('match');
-            } else {
-                input.classList.remove('match');
+                if (showCaptureGroups) {
+                    // Highlight capture groups
+                    let highlightedText = input.value;
+                    let captureGroups = [];
+
+                    for (let i = 1; i < matches.length; i++) {
+                        // Create a highlighted version of the matches
+                        highlightedText = highlightedText.replace(matches[i], `<span class="highlight">${matches[i]}</span>`);
+                        captureGroups.push(matches[i]);
+                    }
+
+                    // Display the highlighted text
+                    input.value = highlightedText;
+
+                    // Display capture groups in a separate box
+                    const captureGroupText = document.createElement('div');
+                    captureGroupText.textContent = `Example ${index + 1} capture groups: ${captureGroups.join(', ')}`;
+                    captureGroupsOutput.appendChild(captureGroupText);
+                } else {
+                    input.classList.add('match');
+                }
             }
         });
     } catch (e) {
         // Handle invalid regex pattern
-        exampleInputs.forEach((input) => {
-            input.classList.remove('match');
-        });
+        console.error('Invalid regex pattern.');
     }
 }
 
+// Combine both populateFields and updateRegex into an init function
+function init() {
+    populateFields();
+    updateRegex(); // This will now also call testRegex
+}
 
-// Populate fields when the page loads
-window.onload = populateFields;
+// Call the init function on page load
+window.onload = init;

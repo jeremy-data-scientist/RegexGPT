@@ -95,3 +95,13 @@ footer {
 footer p {
 	color: #999;
 }
+/* Style for checked checkboxes */
+input[type="checkbox"]:checked {
+    accent-color: green;
+  }
+  
+/* Style for input fields when the associated checkbox is checked */
+input[type="checkbox"]:checked + input {
+border: 2px solid green;
+background-color: #e6ffe6; /* Light green background */
+}

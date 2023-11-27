@@ -67,12 +67,13 @@ function testRegex() {
                     }
 
                     // Display the highlighted text
-                    input.value = highlightedText;
+                    const highlightedTextContainer = document.getElementById('highlighted-text' + (index + 1));
+                    highlightedTextContainer.innerHTML = highlightedText;
 
                     // Display capture groups in a separate box
-                    const captureGroupText = document.createElement('div');
-                    captureGroupText.textContent = `Example ${index + 1} capture groups: ${captureGroups.join(', ')}`;
-                    captureGroupsOutput.appendChild(captureGroupText);
+                    const captureGroupDiv = document.getElementById('capture-group' + (index + 1));
+                    captureGroupDiv.textContent = 'Capture groups: ' + captureGroups.join(', ');
+
                 } else {
                     input.classList.add('match');
                 }

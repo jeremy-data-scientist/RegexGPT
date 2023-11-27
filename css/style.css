@@ -81,21 +81,20 @@ header h1 {
 	align-items: center;
 }
 
-.form-group input[type="checkbox"] {
-	margin-left: auto; /* Push to the end of the flex container */
-}
-
-/* Style for checked checkboxes */
-.form-group input[type="checkbox"]:checked {
-    accent-color: green;
+/* Style for input fields */
+.example-input {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 10px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
   }
   
-/* Style for input fields when the associated checkbox is checked */
-.form-group input[type="checkbox"]:checked + input {
-border: 2px solid green;
-background-color: #e6ffe6; /* Light green background */
-}
-
+  /* Style for input fields when there's a regex match */
+  .example-input.match {
+    border: 2px solid green;
+    background-color: #e6ffe6; /* Light green background */
+  }
 footer {
 	text-align: center;
 	margin-top: 20px;

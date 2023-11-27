@@ -16,20 +16,10 @@ function getQueryStringParams() {
 function populateFields() {
     const { regex, examples } = getQueryStringParams();
     document.getElementById('regex-input').value = regex || '';
-    const exampleInputs = document.getElementById('example-inputs');
     examples.forEach((example, index) => {
-        const inputGroup = document.createElement('div');
-        const exampleInput = document.createElement('input');
-        const checkbox = document.createElement('input');
-        checkbox.type = 'checkbox';
-        checkbox.disabled = false;
-        exampleInput.type = 'text';
-        exampleInput.value = example || '';
-        exampleInput.oninput = testRegex;
-        exampleInput.dataset.index = index;
-        inputGroup.appendChild(exampleInput);
-        inputGroup.appendChild(checkbox);
-        exampleInputs.appendChild(inputGroup);
+        if (example !== null) {
+            document.getElementById('example' + (index + 1)).value = example;
+        }
     });
 }
 
@@ -43,22 +33,25 @@ document.getElementById('example-inputs').addEventListener('click', function (ev
 // Function to test regex
 function testRegex() {
     const regexInput = document.getElementById('regex-input').value;
-    const exampleInputs = document.querySelectorAll('#example-inputs input[type="text"]');
+    const exampleInputs = document.querySelectorAll('.example-input');
     try {
         const regex = new RegExp(regexInput);
         exampleInputs.forEach((input) => {
-            const checkbox = input.nextSibling;
             const matches = regex.test(input.value);
-            checkbox.checked = matches;
+            if (matches) {
+                input.classList.add('match');
+            } else {
+                input.classList.remove('match');
+            }
         });
     } catch (e) {
         // Handle invalid regex pattern
         exampleInputs.forEach((input) => {
-            const checkbox = input.nextSibling;
-            checkbox.checked = false;
+            input.classList.remove('match');
         });
     }
 }
+
 
 // Populate fields when the page loads
 window.onload = populateFields;

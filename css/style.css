@@ -85,6 +85,17 @@ header h1 {
 	margin-left: auto; /* Push to the end of the flex container */
 }
 
+/* Style for checked checkboxes */
+.form-group input[type="checkbox"]:checked {
+    accent-color: green;
+  }
+  
+/* Style for input fields when the associated checkbox is checked */
+.form-group input[type="checkbox"]:checked + input {
+border: 2px solid green;
+background-color: #e6ffe6; /* Light green background */
+}
+
 footer {
 	text-align: center;
 	margin-top: 20px;
@@ -94,14 +105,4 @@ footer {
 
 footer p {
 	color: #999;
-}
-/* Style for checked checkboxes */
-input[type="checkbox"]:checked {
-    accent-color: green;
-  }
-  
-/* Style for input fields when the associated checkbox is checked */
-input[type="checkbox"]:checked + input {
-border: 2px solid green;
-background-color: #e6ffe6; /* Light green background */
 }

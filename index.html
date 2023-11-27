@@ -16,13 +16,9 @@
                 <label for="regex-input">Enter your regex:</label>
                 <input type="text" id="regex-input" name="regex" placeholder="e.g., ^[a-z0-9]+@[a-z]+\.[a-z]{2,3}$" oninput="testRegex()">
             </div>
-            <div class="form-group">
-                <label for="test-string">Test strings:</label>
-                <textarea id="test-string" name="test-string" rows="4" placeholder="Enter test strings separated by newline" oninput="testRegex()"></textarea>
+            <div class="form-group" id="example-inputs">
+                <!-- Example input fields will be populated here -->
             </div>
-            <section id="results">
-                <!-- Results will be displayed here -->
-            </section>
         </main>
         <footer>
             <p>&copy; 2023 Regex Tester</p>

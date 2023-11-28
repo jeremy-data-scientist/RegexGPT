@@ -18,10 +18,9 @@ function populateFields() {
     document.getElementById('regex-input').value = regex || '';
     examples.forEach((example, index) => {
         if (example !== null) {
-            document.getElementById('example' + (index + 1)).value = example;
+            document.getElementById('example' + (index + 1)).innerText = example;
         }
     });
-    // Call testRegex after populating the fields to apply highlighting
     testRegex();
 }
 
@@ -39,50 +38,42 @@ function updateRegex() {
     document.getElementById('capture-group-toggle').checked = hasCaptureGroups;
     testRegex();
 }
-
 function testRegex() {
     const regexInput = document.getElementById('regex-input').value;
     const showCaptureGroups = document.getElementById('capture-group-toggle').checked;
     const captureGroupsOutput = document.getElementById('capture-groups-output');
-    captureGroupsOutput.innerHTML = ''; // Clear previous capture groups
+    captureGroupsOutput.innerHTML = '';
 
     try {
         const regex = new RegExp(regexInput);
-        const exampleInputs = document.querySelectorAll('.example-input');
+        const exampleDivs = document.querySelectorAll('.editable-content');
 
-        exampleInputs.forEach((input, index) => {
-            const matches = input.value.match(regex);
-            input.classList.remove('match');
+        exampleDivs.forEach((div, index) => {
+            const matches = div.innerText.match(regex);
+            div.classList.remove('match');
 
-            if (matches) {
-                if (showCaptureGroups) {
-                    // Highlight capture groups
-                    let highlightedText = input.value;
-                    let captureGroups = [];
+            if (matches && showCaptureGroups) {
+                // Highlight capture groups
+                let newText = div.innerText;
+                let captureGroups = [];
 
-                    for (let i = 1; i < matches.length; i++) {
-                        // Create a highlighted version of the matches
-                        highlightedText = highlightedText.replace(matches[i], `<span class="highlight">${matches[i]}</span>`);
-                        captureGroups.push(matches[i]);
-                    }
-
-                    // Display the highlighted text
-                    input.value = highlightedText;
-
-                    // Display capture groups in a separate box
-                    const captureGroupText = document.createElement('div');
-                    captureGroupText.textContent = `Example ${index + 1} capture groups: ${captureGroups.join(', ')}`;
-                    captureGroupsOutput.appendChild(captureGroupText);
-                } else {
-                    input.classList.add('match');
+                for (let i = 1; i < matches.length; i++) {
+                    captureGroups.push(matches[i]);
+                    newText = newText.replace(matches[i], `<span class="highlight">${matches[i]}</span>`);
                 }
+
+                div.innerHTML = newText;
+
+                const captureGroupDiv = document.createElement('div');
+                captureGroupDiv.textContent = `Example ${index + 1} capture groups: ${captureGroups.join(', ')}`;
+                captureGroupsOutput.appendChild(captureGroupDiv);
             }
         });
     } catch (e) {
-        // Handle invalid regex pattern
         console.error('Invalid regex pattern.');
     }
 }
+
 
 // Combine both populateFields and updateRegex into an init function
 function init() {

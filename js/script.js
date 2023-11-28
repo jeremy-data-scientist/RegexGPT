@@ -89,7 +89,21 @@ function testRegex(defocused_div) {
 
                     for (let i = 1; i < matches.length; i++) {
                         captureGroups.push(matches[i]);
-                        newText = newText.replace(matches[i], `<span class="highlight">${matches[i]}</span>`);
+                        // Use a function to replace only non-highlighted matches
+                        newText = newText.replace(new RegExp(matches[i], 'g'), (match, offset, fullString) => {
+                            // Check if the match is already part of a "highlight" span
+                            const spanOpeningTag = fullString.lastIndexOf('<span', offset);
+                            const spanClosingTag = fullString.lastIndexOf('</span>', offset);
+                            
+                            // If the closing tag of a span precedes the match or there is no opening tag before the match,
+                            // then this match is not inside a span and should be highlighted.
+                            if (spanOpeningTag === -1 || spanClosingTag > spanOpeningTag) {
+                                return `<span class="highlight">${match}</span>`;
+                            }
+                    
+                            // If the match is inside an existing "highlight" span, return the match unaltered
+                            return match;
+                        });
                     }
 
                     div.innerHTML = newText;

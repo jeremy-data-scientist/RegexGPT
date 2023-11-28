@@ -50,14 +50,15 @@ function attachEditableEvents() {
             cleanHighlight(this);
         });
         div.addEventListener('blur', function() {
-            testRegex(); // Call testRegex when the div loses focus
+            testRegex(div); // Call testRegex when the div loses focus
         });
     });
 }
 
 // Call this function to initialize the event listeners
 attachEditableEvents();
-function testRegex() {
+
+function testRegex(defocused_div) {
     const regexInput = document.getElementById('regex-input').value;
     const showCaptureGroups = document.getElementById('capture-group-toggle').checked;
     const captureGroupsOutput = document.getElementById('capture-groups-output');
@@ -77,7 +78,7 @@ function testRegex() {
             } else {
                 div.classList.remove('match');
             }
-            if(showCaptureGroups && div !== currentlyFocusedElement){
+            if(showCaptureGroups && div === defocused_div){
                 const matches = textToCheck.match(regex);
                 console.log(matches)
 

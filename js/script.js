@@ -58,6 +58,28 @@ function attachEditableEvents() {
 // Call this function to initialize the event listeners
 attachEditableEvents();
 
+// function replaceNthMatch(originalText, regex, nth, replacement) {
+//     let count = 0; // Initialize counter
+  
+//     return originalText.replace(regex, (match) => {
+//       count++; // Increment counter for each match
+//       if (count === nth) {
+//         // When the nth match is found, replace with the replacement text
+//         return replacement(match);
+//       }
+//       return match; // Otherwise, return the match as is
+//     });
+//   }
+  
+//   // Example usage:
+//   let text = "The quick brown fox jumps over the lazy dog";
+//   let regexToMatch = /(\b\w+\b)/g; // Regex to match each word
+  
+//   // Replace the 4th word with a highlight span
+//   let nth = 4;
+//   let newText = replaceNthMatch(text, regexToMatch, nth, (match) => `<span class="highlight">${match}</span>`);
+  
+
 function testRegex(defocused_div) {
     const regexInput = document.getElementById('regex-input').value;
     const showCaptureGroups = document.getElementById('capture-group-toggle').checked;
@@ -84,34 +106,21 @@ function testRegex(defocused_div) {
 
                 if (matches) {
                     // Highlight capture groups
-                    let newText = textToCheck;
                     let captureGroups = [];
 
-                    for (let i = 1; i < matches.length; i++) {
-                        captureGroups.push(matches[i]);
-                        // Use a function to replace only non-highlighted matches
-                        newText = newText.replace(new RegExp(matches[i], 'g'), (match, offset, fullString) => {
-                            // Check if the match is already part of a "highlight" span
-                            const spanOpeningTag = fullString.lastIndexOf('<span', offset);
-                            const spanClosingTag = fullString.lastIndexOf('</span>', offset);
-                            
-                            // If the closing tag of a span precedes the match or there is no opening tag before the match,
-                            // then this match is not inside a span and should be highlighted.
-                            if (spanOpeningTag === -1 || spanClosingTag > spanOpeningTag) {
-                                return `<span class="highlight">${match}</span>`;
-                            }
-                    
-                            // If the match is inside an existing "highlight" span, return the match unaltered
-                            return match;
-                        });
+                    function highlightAllMatches(originalText, regex) {
+                        return originalText.replace(regex, (match) => `<span class="highlight">${match}</span>`);
+                      }
+
                     }
 
-                    div.innerHTML = newText;
+                    let highlightedText = highlightAllMatches(textToCheck, regex);
+
+                    div.innerHTML = highlightedText;
 
                     const captureGroupDiv = document.createElement('div');
                     captureGroupDiv.textContent = `Example ${index + 1} capture groups: ${captureGroups.join(', ')}`;
                     captureGroupsOutput.appendChild(captureGroupDiv);
-                }
             }
         } catch (e) {
             div.classList.remove('match');

@@ -49,7 +49,7 @@ function testRegex() {
         const exampleDivs = document.querySelectorAll('.editable-content');
         exampleDivs.forEach((div, index) => {
             try {
-            const any_match = regex.test(input.value);
+            const any_match = regex.test(div.innerText);
             if (any_match) {
                 div.classList.add('match');
             } else {

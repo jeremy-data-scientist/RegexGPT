@@ -105,7 +105,7 @@ function testRegex(defocused_div) {
 
         const exampleDivs = document.querySelectorAll('.editable-content');
         exampleDivs.forEach((div, index) => {
-            textToCheck = div.innerHTML;/*.replace(/<span class="highlight">|<\/span>/g, '');*/
+            textToCheck = div.innerHTML.replace(/<span class="highlight">(.*?)<\/span>/g, '$1');/*.replace(/<span class="highlight">|<\/span>/g, '');*/
             console.log(textToCheck)
             try {
             const any_match = regex.test(textToCheck);
@@ -115,7 +115,7 @@ function testRegex(defocused_div) {
                 div.classList.remove('match');
             }
             if(showCaptureGroups && (defocused_div===true || div === defocused_div)){
-                cleanHighlight(div)
+                //cleanHighlight(div)
 
                 const matches = textToCheck.match(regex) || [];
                 console.log(matches)

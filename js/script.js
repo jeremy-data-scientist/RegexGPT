@@ -23,7 +23,10 @@ function populateFields() {
     });
 }
 
-
+function updateAndTestRegex(){
+    updateRegex();
+    testRegex();
+}
 function updateRegex() {
     const regexInput = document.getElementById('regex-input').value;
     // Automatically check the 'Show capture groups' checkbox if the regex contains capture groups
@@ -151,7 +154,7 @@ function init() {
     // Call this function to initialize the event listeners
     attachEditableEvents();
 
-    updateRegex();
+    updateAndTestRegex();
 }
 
 // Call the init function on page load

@@ -44,17 +44,24 @@ function cleanHighlight(element) {
     element.innerHTML = element.innerHTML.replace(/<span class="highlight">(.*?)<\/span>/g, '$1');
 }
 
-// Add event listeners to each editable content div for the focus event
-document.querySelectorAll('.editable-content').forEach(div => {
-    div.addEventListener('focus', function() {
-        cleanHighlight(this);
+function attachEditableEvents() {
+    document.querySelectorAll('.editable-content').forEach(div => {
+        div.addEventListener('focus', function() {
+            cleanHighlight(this);
+        });
+        div.addEventListener('blur', function() {
+            testRegex(); // Call testRegex when the div loses focus
+        });
     });
-});
+}
 
+// Call this function to initialize the event listeners
+attachEditableEvents();
 function testRegex() {
     const regexInput = document.getElementById('regex-input').value;
     const showCaptureGroups = document.getElementById('capture-group-toggle').checked;
     const captureGroupsOutput = document.getElementById('capture-groups-output');
+    const currentlyFocusedElement = document.activeElement;
     captureGroupsOutput.innerHTML = '';
 
     
@@ -70,7 +77,7 @@ function testRegex() {
             } else {
                 div.classList.remove('match');
             }
-            if(showCaptureGroups){
+            if(showCaptureGroups && div !== currentlyFocusedElement){
                 const matches = textToCheck.match(regex);
                 console.log(matches)
 

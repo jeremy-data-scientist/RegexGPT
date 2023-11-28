@@ -112,7 +112,7 @@ function generateExamples() {
 // Initialization function
 function init() {
     generateExamples();
-    //populateFields();
+    populateFields();
 }
 
 window.onload = init;

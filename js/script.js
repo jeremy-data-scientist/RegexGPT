@@ -44,15 +44,16 @@ function testRegex() {
     const captureGroupsOutput = document.getElementById('capture-groups-output');
     captureGroupsOutput.innerHTML = '';
 
-    try {
+    
         const regex = new RegExp(regexInput);
         const exampleDivs = document.querySelectorAll('.editable-content');
         exampleDivs.forEach((div, index) => {
+            try {
             const any_match = regex.test(input.value);
             if (any_match) {
-                input.classList.add('match');
+                div.classList.add('match');
             } else {
-                input.classList.remove('match');
+                div.classList.remove('match');
             }
             if(showCaptureGroups){
                 const matches = div.innerText.match(regex);
@@ -75,11 +76,11 @@ function testRegex() {
                     captureGroupsOutput.appendChild(captureGroupDiv);
                 }
             }
+        } catch (e) {
+            div.classList.remove('match');
+            console.error('Invalid regex pattern. ' || e);
+        }
         });
-    } catch (e) {
-        div.classList.remove('match');
-        console.error('Invalid regex pattern. ' || e);
-    }
 }
 
 

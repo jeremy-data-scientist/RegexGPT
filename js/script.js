@@ -101,9 +101,7 @@ function generateExamples() {
     for (let i = 1; i <= 4; i++) {
         exampleInputs.innerHTML += `
             <div class="example-container">
-                <div class="highlighted-text" id="highlighted-text${i}" contenteditable="true">Example text here...</div>
-                <button onclick="editText(${i})">Edit</button>
-                <div class="capture-group" id="capture-group${i}"></div>
+                
             </div>
         `;
     }
@@ -111,7 +109,7 @@ function generateExamples() {
 
 // Initialization function
 function init() {
-    //generateExamples();
+    generateExamples();
     //populateFields();
 }
 

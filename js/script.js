@@ -12,7 +12,7 @@ function getQueryStringParams() {
     };
 }
 
-// Function to populate form fields from query string parameters
+// Function to populate the highlighted text divs from query string parameters
 function populateFields() {
     const { regex, examples } = getQueryStringParams();
     document.getElementById('regex-input').value = regex || '';
@@ -22,111 +22,80 @@ function populateFields() {
             exampleDiv.innerText = example; // Set the text content of the div
         }
     });
-    // Call updateRegex which will call testRegex
-    updateRegex();
+    testRegex(); // Call testRegex to apply initial highlighting
 }
 
-document.getElementById('example-inputs').addEventListener('click', function (event) {
-    if (event.target.type === 'checkbox') {
-      // Check if the clicked element is a checkbox
-        event.preventDefault(); // Prevent checkbox change
-    }
-  });
+// Function to handle the editing of text
+function editText(exampleNumber) {
+    const highlightedTextDiv = document.getElementById('highlighted-text' + exampleNumber);
+    const textEditInput = document.getElementById('text-edit' + exampleNumber);
+    const editButton = highlightedTextDiv.nextElementSibling;
 
-  function updateRegex() {
-    const regexInput = document.getElementById('regex-input').value;
-    // Automatically check the 'Show capture groups' checkbox if the regex contains capture groups
-    const hasCaptureGroups = /\(.*?\)/.test(regexInput);
-    document.getElementById('capture-group-toggle').checked = hasCaptureGroups;
-    
-    // Make sure to update the editable divs if we are in capture group mode
-    if (hasCaptureGroups) {
-        testRegex(); // This function will handle highlighting and displaying capture groups
+    if (textEditInput.style.display === 'none') {
+        // Switch to edit mode
+        highlightedTextDiv.style.display = 'none';
+        textEditInput.style.display = 'block';
+        editButton.textContent = 'Done';
+        textEditInput.value = highlightedTextDiv.textContent;
+        textEditInput.focus();
     } else {
-        // If we are not in capture group mode, remove any existing highlights
-        const exampleDivs = document.querySelectorAll('.highlighted-text');
-        exampleDivs.forEach(div => {
-            // Replace the inner HTML with just text to remove any <span> elements
-            div.innerHTML = div.innerText;
-        });
+        // Switch back to highlight mode
+        highlightedTextDiv.style.display = 'block';
+        textEditInput.style.display = 'none';
+        editButton.textContent = 'Edit';
+        highlightedTextDiv.textContent = textEditInput.value;
+        testRegex(); // Reapply highlighting and regex testing
     }
 }
+
+// Function to test regex against the example texts and apply highlighting
 function testRegex() {
     const regexInput = document.getElementById('regex-input').value;
     const showCaptureGroups = document.getElementById('capture-group-toggle').checked;
-
+    
     try {
-        const regex = new RegExp(regexInput);
-        const exampleDivs = document.querySelectorAll('.highlighted-text');
+        const regex = new RegExp(regexInput, 'g'); // Global flag for multiple matches
+        document.querySelectorAll('.example-container').forEach(container => {
+            const highlightedTextDiv = container.querySelector('.highlighted-text');
+            const textEditInput = container.querySelector('.text-edit');
+            const captureGroupDiv = container.querySelector('.capture-group');
+            const exampleText = textEditInput.style.display === 'none' ? highlightedTextDiv.textContent : textEditInput.value;
+            
+            let match = regex.exec(exampleText);
+            let newText = exampleText;
+            let captureGroups = [];
 
-        exampleDivs.forEach((div, index) => {
-            const matches = div.innerText.match(regex);
-            div.classList.remove('match');
-
-            if (matches) {
-                // Clear previous content
-                div.innerHTML = '';
-
-                if (showCaptureGroups) {
-                    // Highlight capture groups
-                    let newText = div.innerText;
-                    let captureGroups = [];
-
-                    matches.forEach((match, groupIndex) => {
-                        if (groupIndex !== 0) { // skip the entire match
-                            const span = document.createElement('span');
-                            span.classList.add('highlight');
-                            span.textContent = match;
-                            newText = newText.replace(match, span.outerHTML);
-                            captureGroups.push(match);
-                        }
-                    });
-
-                    // Set the new HTML
-                    div.innerHTML = newText;
-
-                    // Display capture groups in a separate box
-                    const captureGroupDiv = document.getElementById('capture-group' + (index + 1));
-                    captureGroupDiv.textContent = 'Capture groups: ' + captureGroups.join(', ');
+            while (match !== null) {
+                let fullMatch = match[0];
+                if (showCaptureGroups && match.length > 1) {
+                    // Capture groups exist
+                    let groups = [];
+                    for (let i = 1; i < match.length; i++) {
+                        groups.push(match[i]);
+                        newText = newText.replace(match[i], `<span class="highlight">${match[i]}</span>`);
+                    }
+                    captureGroups.push(`[${groups.join(', ')}]`);
                 } else {
-                    // Just display matches
-                    div.classList.add('match');
+                    // No capture groups, just highlight the full match
+                    newText = newText.replace(fullMatch, `<span class="highlight">${fullMatch}</span>`);
                 }
-            } else {
-                // If no matches, ensure any previous highlighting is cleared
-                div.innerHTML = div.innerText;
+                match = regex.exec(exampleText);
             }
+            
+            // Update the display based on the mode
+            if (textEditInput.style.display === 'none') {
+                highlightedTextDiv.innerHTML = newText; // Display with highlighting
+            }
+            captureGroupDiv.textContent = captureGroups.join(', '); // Display capture groups
         });
     } catch (e) {
-        // Handle invalid regex pattern
         console.error('Invalid regex pattern.');
     }
 }
 
-function editText(exampleNumber) {
-    var highlightedTextDiv = document.getElementById('highlighted-text' + exampleNumber);
-    var textEditInput = document.getElementById('text-edit' + exampleNumber);
-
-    // If we're showing the editable input, hide it and show the highlighted text
-    if (textEditInput.style.display === 'none') {
-        highlightedTextDiv.style.display = 'none';
-        textEditInput.style.display = 'block';
-        textEditInput.value = highlightedTextDiv.innerText; // Transfer the text for editing
-        textEditInput.focus();
-    } else {
-        highlightedTextDiv.style.display = 'block';
-        textEditInput.style.display = 'none';
-        highlightedTextDiv.innerHTML = textEditInput.value; // Transfer back the edited text
-        // Call testRegex to update the highlighting
-        testRegex();
-    }
-}
-
-// Combine both populateFields and updateRegex into an init function
+// Initialization function
 function init() {
     populateFields();
-    updateRegex(); // This will now also call testRegex
 }
 
-// Call the init function on page load
 window.onload = init;

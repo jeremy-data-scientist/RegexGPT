@@ -115,6 +115,8 @@ function testRegex(defocused_div) {
                 div.classList.remove('match');
             }
             if(showCaptureGroups && (defocused_div===true || div === defocused_div)){
+                cleanHighlight(div)
+
                 const matches = textToCheck.match(regex) || [];
                 console.log(matches)
 

@@ -123,13 +123,14 @@ header h1 {
 .highlighted-text {
     white-space: pre-wrap; /* Preserve whitespace and newline */
     pointer-events: none; /* Allow click to pass through to input */
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    background-color: #f8f8f8; 
+    cursor: text;
     overflow: hidden;
 }
+
 
 .example-input {
     position: relative;
@@ -151,15 +152,6 @@ button {
     padding: 6px 12px;
     font-size: 14px;
     cursor: pointer;
-}
-
-.highlighted-text {
-    padding: 10px;
-    border: 1px solid #ddd;
-    border-radius: 4px;
-    background-color: #f8f8f8; 
-    cursor: text;
-    /*min-height: 20px; */
 }
 
 .text-edit {

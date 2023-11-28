@@ -39,23 +39,6 @@ function updateRegex() {
     testRegex();
 }
 
-function cleanHighlightFromText(element) {
-    // Create a new div element to manipulate the inner HTML
-    var tempDiv = document.createElement('div');
-    // Set the inner HTML to the content of the original div
-    tempDiv.innerHTML = element.innerHTML;
-    
-    // Find all the span elements with the "highlight" class and remove them
-    var spans = tempDiv.querySelectorAll('.highlight');
-    spans.forEach(function(span) {
-      // Replace the span with just its text content
-      span.parentNode.replaceChild(document.createTextNode(span.innerText), span);
-    });
-  
-    // Return the cleaned text
-    return tempDiv.innerText;
-  }
-
 function testRegex() {
     const regexInput = document.getElementById('regex-input').value;
     const showCaptureGroups = document.getElementById('capture-group-toggle').checked;
@@ -66,7 +49,8 @@ function testRegex() {
         const regex = new RegExp(regexInput);
         const exampleDivs = document.querySelectorAll('.editable-content');
         exampleDivs.forEach((div, index) => {
-            textToCheck = cleanHighlightFromText(div.innerText)
+            textToCheck = div.innerHTML.replace(/<span class="highlight">|<\/span>/g, '');
+            console.log(textToCheck)
             try {
             const any_match = regex.test(textToCheck);
             if (any_match) {

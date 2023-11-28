@@ -32,7 +32,7 @@ function updateRegex() {
     // Automatically check the 'Show capture groups' checkbox if the regex contains capture groups
     const hasCaptureGroups = /\(.*?\)/.test(regexInput);
     document.getElementById('capture-group-toggle').checked = hasCaptureGroups;
-    //document.getElementById('capture-group-toggle').dispatchEvent(new Event('change'));   // Initial call to set the correct state when the page loads
+    document.getElementById('capture-group-toggle').dispatchEvent(new Event('change'));   // Initial call to set the correct state when the page loads
 }
 
 function cleanHighlight(element) {

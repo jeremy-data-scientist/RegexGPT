@@ -47,9 +47,9 @@ function testRegex() {
     try {
         const regex = new RegExp(regexInput);
         const exampleDivs = document.querySelectorAll('.editable-content');
-
         exampleDivs.forEach((div, index) => {
             const matches = div.innerText.match(regex);
+            console.log(matches)
             div.classList.remove('match');
 
             if (matches && showCaptureGroups) {

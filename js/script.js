@@ -70,7 +70,7 @@ function testRegex() {
             }
         });
     } catch (e) {
-        console.error('Invalid regex pattern.');
+        console.error('Invalid regex pattern. ' || e);
     }
 }
 

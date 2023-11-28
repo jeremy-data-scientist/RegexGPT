@@ -61,7 +61,7 @@ header h1 {
 	color: #666;
 }
 
-.form-group input[type="text"],
+
 .form-group textarea {
 	width: calc(100% - 22px); /* Account for checkbox width */
 	padding: 10px;
@@ -70,7 +70,6 @@ header h1 {
 	margin-right: 10px;
 }
 
-.form-group input[type="text"]:focus,
 .form-group textarea:focus {
 	outline: none;
 	border-color: #007bff;
@@ -80,21 +79,6 @@ header h1 {
 	display: flex;
 	align-items: center;
 }
-
-/* Style for input fields */
-.example-input {
-    width: 100%;
-    padding: 10px;
-    margin-bottom: 10px;
-    border: 1px solid #ddd;
-    border-radius: 4px;
-  }
-  
-  /* Style for input fields when there's a regex match */
-  .example-input.match {
-    border: 2px solid green;
-    background-color: #e6ffe6; /* Light green background */
-  }
 
 /* Style for the capture groups output */
 #capture-groups-output {
@@ -117,3 +101,28 @@ footer {
 footer p {
 	color: #999;
 }
+
+.editable-content {
+    display: block; /* Allows the div to behave like a block-level input */
+    width: 100%; /* Full container width */
+    padding: 10px; /* Same padding as inputs */
+    margin-bottom: 10px; /* Space between editable divs */
+    border: 1px solid #ddd; /* Similar border to input */
+    border-radius: 4px; /* Rounded corners */
+    background-color: #fff; /* White background like an input field */
+    font-family: inherit; /* Same font as inputs */
+    font-size: 16px; /* Same font size as inputs */
+    line-height: 1.5; /* Line height similar to inputs */
+    box-shadow: inset 0 1px 2px rgba(0,0,0,0.1); /* Subtle inner shadow like some inputs */
+    outline: none; /* Removes the default focus outline */
+}
+
+.editable-content:focus {
+    border-color: #007bff; /* Highlight border color when focused */
+    box-shadow: inset 0 1px 2px rgba(0,0,0,0.1), 0 0 8px rgba(0,123,255,0.5); /* More prominent shadow on focus */
+}
+  /* Style for input fields when there's a regex match */
+.match {
+    border: 2px solid green;
+    background-color: #e6ffe6; /* Light green background */
+  }

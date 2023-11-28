@@ -155,3 +155,36 @@ footer {
 footer p {
 	color: #999;
 }
+
+button {
+    padding: 6px 12px;
+    margin-left: 10px;
+    font-size: 14px;
+    cursor: pointer;
+}
+
+/* Style for the highlighted-text div */
+.highlighted-text {
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    margin-bottom: 10px;
+    white-space: pre-wrap; /* Preserves whitespace and newlines */
+    background-color: #f8f8f8; /* Light gray background */
+}
+
+/* Style for the text-edit input field (initially hidden) */
+.text-edit {
+    display: none; /* Hidden by default, shown when editing */
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 10px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 16px; /* Match font size with the highlighted text */
+}
+
+/* Style for the example container */
+.example-container {
+    margin-bottom: 20px;
+}

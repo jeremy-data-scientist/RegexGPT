@@ -22,32 +22,24 @@
             <div class="form-group" id="example-inputs">
                 <label>Test your regex:</label>
                 <div class="example-container">
-                    <div class="input-highlight-container">
-                        <div class="highlighted-text" id="highlighted-text1"></div>
-                        <div contenteditable="true" class="example-input" id="example1" oninput="testRegex()"></div>
-                    </div>
-                    <div class="capture-group" id="capture-group1"></div>
+                    <div class="highlighted-text" id="highlighted-text1">Example text here...</div>
+                    <button onclick="editText(1)">Edit</button>
+                    <input type="text" class="text-edit" id="text-edit1" oninput="testRegex()" style="display:none;">
                 </div>
                 <div class="example-container">
-                    <div class="input-highlight-container">
-                        <div class="highlighted-text" id="highlighted-text2"></div>
-                        <div contenteditable="true" class="example-input" id="example2" oninput="testRegex()"></div>
-                    </div>
-                    <div class="capture-group" id="capture-group2"></div>
+                    <div class="highlighted-text" id="highlighted-text2">Example text here...</div>
+                    <button onclick="editText(2)">Edit</button>
+                    <input type="text" class="text-edit" id="text-edit2" oninput="testRegex()" style="display:none;">
                 </div>
                 <div class="example-container">
-                    <div class="input-highlight-container">
-                        <div class="highlighted-text" id="highlighted-text3"></div>
-                        <div contenteditable="true" class="example-input" id="example3" oninput="testRegex()"></div>
-                    </div>
-                    <div class="capture-group" id="capture-group3"></div>
+                    <div class="highlighted-text" id="highlighted-text3">Example text here...</div>
+                    <button onclick="editText(3)">Edit</button>
+                    <input type="text" class="text-edit" id="text-edit3" oninput="testRegex()" style="display:none;">
                 </div>
                 <div class="example-container">
-                    <div class="input-highlight-container">
-                        <div class="highlighted-text" id="highlighted-text4"></div>
-                        <div contenteditable="true" class="example-input" id="example4" oninput="testRegex()"></div>
-                    </div>
-                    <div class="capture-group" id="capture-group4"></div>
+                    <div class="highlighted-text" id="highlighted-text4">Example text here...</div>
+                    <button onclick="editText(4)">Edit</button>
+                    <input type="text" class="text-edit" id="text-edit4" oninput="testRegex()" style="display:none;">
                 </div>
             </div>
             <div id="capture-groups-output"></div>

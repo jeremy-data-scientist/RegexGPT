@@ -102,6 +102,15 @@ footer p {
 	color: #999;
 }
 
+.match-options {
+    margin-top: 10px;
+  }
+  
+  .match-options label {
+    margin-right: 15px;
+    font-size: 14px;
+  }
+  
 .editable-content {
     display: block; /* Allows the div to behave like a block-level input */
     width: 100%; /* Full container width */

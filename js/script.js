@@ -86,9 +86,8 @@ function testRegex(defocused_div) {
     const captureGroupsOutput = document.getElementById('capture-groups-output');
     const currentlyFocusedElement = document.activeElement;
     captureGroupsOutput.innerHTML = '';
+    const regex = new RegExp(regexInput,getMatchMode());
 
-    
-        const regex = new RegExp(regexInput,"g");
         const exampleDivs = document.querySelectorAll('.editable-content');
         exampleDivs.forEach((div, index) => {
             textToCheck = div.innerHTML;/*.replace(/<span class="highlight">|<\/span>/g, '');*/
@@ -119,7 +118,7 @@ function testRegex(defocused_div) {
                     div.innerHTML = highlightedText;
 
                     const captureGroupDiv = document.createElement('div');
-                    captureGroupDiv.textContent = `Example ${index + 1} capture groups: ${captureGroups.join(', ')}`;
+                    captureGroupDiv.textContent = `Example ${index + 1} capture groups: ${matches.join(', ')}`;
                     captureGroupsOutput.appendChild(captureGroupDiv);
             }
         } catch (e) {
@@ -129,6 +128,28 @@ function testRegex(defocused_div) {
         });
 }
 
+document.getElementById('capture-group-toggle').addEventListener('change', function() {
+    // Get the current state of the checkbox
+    const isChecked = this.checked;
+  
+// Find all radio buttons for match-mode and set their disabled property
+document.querySelectorAll('input[name="match-mode"]').forEach(radio => {
+    radio.disabled = !isChecked;
+});
+
+// If the capture group toggle is turned off, reset the match mode to default
+if (!isChecked) {
+    document.querySelector('input[name="match-mode"][value="first"]').checked = true;
+}
+});
+
+// Initial call to set the correct state when the page loads
+document.getElementById('capture-group-toggle').dispatchEvent(new Event('change'));
+
+function getMatchMode() {
+    const matchMode = document.querySelector('input[name="match-mode"]:checked').value;
+    return matchMode === 'all' ? "g" : ""; // This will be 'first' or 'all'
+  }
 
 // Combine both populateFields and updateRegex into an init function
 function init() {

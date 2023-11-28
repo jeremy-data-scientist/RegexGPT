@@ -21,17 +21,8 @@ function populateFields() {
             document.getElementById('example' + (index + 1)).innerText = example;
         }
     });
-    testRegex();
 }
 
-document.getElementById('example-inputs').addEventListener('click', function (event) {
-    if (event.target.type === 'checkbox') {
-      // Check if the clicked element is a checkbox
-        event.preventDefault(); // Prevent checkbox change
-    }
-  });
-
-document.getElementById('regex-input').addEventListener('input', updateRegex);
 
 function updateRegex() {
     const regexInput = document.getElementById('regex-input').value;
@@ -39,7 +30,6 @@ function updateRegex() {
     const hasCaptureGroups = /\(.*?\)/.test(regexInput);
     document.getElementById('capture-group-toggle').checked = hasCaptureGroups;
     document.getElementById('capture-group-toggle').dispatchEvent(new Event('change'));   // Initial call to set the correct state when the page loads
-    testRegex(true);
 }
 
 function cleanHighlight(element) {
@@ -56,10 +46,29 @@ function attachEditableEvents() {
             testRegex(div); // Call testRegex when the div loses focus
         });
     });
-}
+    document.getElementById('example-inputs').addEventListener('click', function (event) {
+        if (event.target.type === 'checkbox') {
+        // Check if the clicked element is a checkbox
+            event.preventDefault(); // Prevent checkbox change
+        }
+    });
 
-// Call this function to initialize the event listeners
-attachEditableEvents();
+    document.getElementById('capture-group-toggle').addEventListener('change', function() {
+        // Get the current state of the checkbox
+        const isChecked = this.checked;
+        testRegex(isChecked);
+      
+    // Find all radio buttons for match-mode and set their disabled property
+    document.querySelectorAll('input[name="match-mode"]').forEach(radio => {
+        radio.disabled = !isChecked;
+    });
+    
+    // If the capture group toggle is turned off, reset the match mode to default
+    if (!isChecked) {
+        document.querySelector('input[name="match-mode"][value="first"]').checked = true;
+    }
+    });
+}
 
 // function replaceNthMatch(originalText, regex, nth, replacement) {
 //     let count = 0; // Initialize counter
@@ -131,23 +140,6 @@ function testRegex(defocused_div) {
         });
 }
 
-document.getElementById('capture-group-toggle').addEventListener('change', function() {
-    // Get the current state of the checkbox
-    const isChecked = this.checked;
-    testRegex(isChecked);
-  
-// Find all radio buttons for match-mode and set their disabled property
-document.querySelectorAll('input[name="match-mode"]').forEach(radio => {
-    radio.disabled = !isChecked;
-});
-
-// If the capture group toggle is turned off, reset the match mode to default
-if (!isChecked) {
-    document.querySelector('input[name="match-mode"][value="first"]').checked = true;
-}
-});
-
-
 function getMatchMode() {
     const matchMode = document.querySelector('input[name="match-mode"]:checked').value;
     return matchMode === 'all' ? "g" : ""; // This will be 'first' or 'all'
@@ -156,7 +148,10 @@ function getMatchMode() {
 // Combine both populateFields and updateRegex into an init function
 function init() {
     populateFields();
-    updateRegex(); // This will now also call testRegex
+    // Call this function to initialize the event listeners
+    attachEditableEvents();
+
+    updateRegex();
 }
 
 // Call the init function on page load

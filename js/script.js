@@ -31,11 +31,14 @@ document.getElementById('example-inputs').addEventListener('click', function (ev
     }
   });
 
+//document.getElementById('regex-input').addEventListener('input', updateRegex);
+
 function updateRegex() {
     const regexInput = document.getElementById('regex-input').value;
     // Automatically check the 'Show capture groups' checkbox if the regex contains capture groups
     const hasCaptureGroups = /\(.*?\)/.test(regexInput);
     document.getElementById('capture-group-toggle').checked = hasCaptureGroups;
+    document.getElementById('capture-group-toggle').dispatchEvent(new Event('change'));   // Initial call to set the correct state when the page loads
     testRegex(true);
 }
 
@@ -99,7 +102,7 @@ function testRegex(defocused_div) {
             } else {
                 div.classList.remove('match');
             }
-            if(showCaptureGroups && div === defocused_div){
+            if(showCaptureGroups && (defocused_div===true || div === defocused_div)){
                 const matches = textToCheck.match(regex) || [];
                 console.log(matches)
 
@@ -131,6 +134,7 @@ function testRegex(defocused_div) {
 document.getElementById('capture-group-toggle').addEventListener('change', function() {
     // Get the current state of the checkbox
     const isChecked = this.checked;
+   // updateRegex();
   
 // Find all radio buttons for match-mode and set their disabled property
 document.querySelectorAll('input[name="match-mode"]').forEach(radio => {
@@ -143,8 +147,6 @@ if (!isChecked) {
 }
 });
 
-// Initial call to set the correct state when the page loads
-document.getElementById('capture-group-toggle').dispatchEvent(new Event('change'));
 
 function getMatchMode() {
     const matchMode = document.querySelector('input[name="match-mode"]:checked').value;

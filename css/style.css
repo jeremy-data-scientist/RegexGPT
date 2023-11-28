@@ -121,14 +121,14 @@ header h1 {
 }
 
 .highlighted-text {
-    white-space: pre-wrap; /* Preserve whitespace and newline */
-    pointer-events: none; /* Allow click to pass through to input */
+    /* white-space: pre-wrap; Preserve whitespace and newline */
+     /* pointer-events: none;Allow click to pass through to input */
     padding: 10px;
     border: 1px solid #ddd;
     border-radius: 4px;
     background-color: #f8f8f8; 
     cursor: text;
-    overflow: hidden;
+     /* overflow: hidden; */
 }
 
 

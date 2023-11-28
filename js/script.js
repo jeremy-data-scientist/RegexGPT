@@ -39,6 +39,18 @@ function updateRegex() {
     testRegex();
 }
 
+function cleanHighlight(element) {
+    // Remove span tags with the class 'highlight'
+    element.innerHTML = element.innerHTML.replace(/<span class="highlight">(.*?)<\/span>/g, '$1');
+}
+
+// Add event listeners to each editable content div for the focus event
+document.querySelectorAll('.editable-content').forEach(div => {
+    div.addEventListener('focus', function() {
+        cleanHighlight(this);
+    });
+});
+
 function testRegex() {
     const regexInput = document.getElementById('regex-input').value;
     const showCaptureGroups = document.getElementById('capture-group-toggle').checked;
@@ -49,7 +61,7 @@ function testRegex() {
         const regex = new RegExp(regexInput);
         const exampleDivs = document.querySelectorAll('.editable-content');
         exampleDivs.forEach((div, index) => {
-            textToCheck = div.innerHTML.replace(/<span class="highlight">|<\/span>/g, '');
+            textToCheck = div.innerHTML;/*.replace(/<span class="highlight">|<\/span>/g, '');*/
             console.log(textToCheck)
             try {
             const any_match = regex.test(textToCheck);

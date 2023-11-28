@@ -78,7 +78,7 @@ function testRegex() {
             }
         } catch (e) {
             div.classList.remove('match');
-            console.error('Invalid regex pattern. ' || e);
+            console.error('Invalid regex pattern. ');
         }
         });
 }

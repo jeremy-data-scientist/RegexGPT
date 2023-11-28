@@ -153,14 +153,14 @@ button {
     cursor: pointer;
 }
 
-/*.highlighted-text {
+.highlighted-text {
     padding: 10px;
     border: 1px solid #ddd;
     border-radius: 4px;
     background-color: #f8f8f8; 
     cursor: text;
-    min-height: 20px; 
-}*/
+    /*min-height: 20px; */
+}
 
 .text-edit {
     width: 100%;

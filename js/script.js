@@ -48,28 +48,36 @@ function testRegex() {
         const regex = new RegExp(regexInput);
         const exampleDivs = document.querySelectorAll('.editable-content');
         exampleDivs.forEach((div, index) => {
-            const matches = div.innerText.match(regex);
-            console.log(matches)
-            div.classList.remove('match');
+            const any_match = regex.test(input.value);
+            if (any_match) {
+                input.classList.add('match');
+            } else {
+                input.classList.remove('match');
+            }
+            if(showCaptureGroups){
+                const matches = div.innerText.match(regex);
+                console.log(matches)
 
-            if (matches && showCaptureGroups) {
-                // Highlight capture groups
-                let newText = div.innerText;
-                let captureGroups = [];
+                if (matches) {
+                    // Highlight capture groups
+                    let newText = div.innerText;
+                    let captureGroups = [];
 
-                for (let i = 1; i < matches.length; i++) {
-                    captureGroups.push(matches[i]);
-                    newText = newText.replace(matches[i], `<span class="highlight">${matches[i]}</span>`);
+                    for (let i = 1; i < matches.length; i++) {
+                        captureGroups.push(matches[i]);
+                        newText = newText.replace(matches[i], `<span class="highlight">${matches[i]}</span>`);
+                    }
+
+                    div.innerHTML = newText;
+
+                    const captureGroupDiv = document.createElement('div');
+                    captureGroupDiv.textContent = `Example ${index + 1} capture groups: ${captureGroups.join(', ')}`;
+                    captureGroupsOutput.appendChild(captureGroupDiv);
                 }
-
-                div.innerHTML = newText;
-
-                const captureGroupDiv = document.createElement('div');
-                captureGroupDiv.textContent = `Example ${index + 1} capture groups: ${captureGroups.join(', ')}`;
-                captureGroupsOutput.appendChild(captureGroupDiv);
             }
         });
     } catch (e) {
+        div.classList.remove('match');
         console.error('Invalid regex pattern. ' || e);
     }
 }

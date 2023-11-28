@@ -87,7 +87,7 @@ header h1 {
 
 /* Highlight for capture groups */
 .highlight {
-    background-color: yellow;
+    background-color: green;
     border-radius: 2px;
 }
 

@@ -38,6 +38,24 @@ function updateRegex() {
     document.getElementById('capture-group-toggle').checked = hasCaptureGroups;
     testRegex();
 }
+
+function cleanHighlightFromText(element) {
+    // Create a new div element to manipulate the inner HTML
+    var tempDiv = document.createElement('div');
+    // Set the inner HTML to the content of the original div
+    tempDiv.innerHTML = element.innerHTML;
+    
+    // Find all the span elements with the "highlight" class and remove them
+    var spans = tempDiv.querySelectorAll('.highlight');
+    spans.forEach(function(span) {
+      // Replace the span with just its text content
+      span.parentNode.replaceChild(document.createTextNode(span.innerText), span);
+    });
+  
+    // Return the cleaned text
+    return tempDiv.innerText;
+  }
+
 function testRegex() {
     const regexInput = document.getElementById('regex-input').value;
     const showCaptureGroups = document.getElementById('capture-group-toggle').checked;
@@ -48,20 +66,21 @@ function testRegex() {
         const regex = new RegExp(regexInput);
         const exampleDivs = document.querySelectorAll('.editable-content');
         exampleDivs.forEach((div, index) => {
+            textToCheck = cleanHighlightFromText(div.innerText)
             try {
-            const any_match = regex.test(div.innerText);
+            const any_match = regex.test(textToCheck);
             if (any_match) {
                 div.classList.add('match');
             } else {
                 div.classList.remove('match');
             }
             if(showCaptureGroups){
-                const matches = div.innerText.match(regex);
+                const matches = textToCheck.match(regex);
                 console.log(matches)
 
                 if (matches) {
                     // Highlight capture groups
-                    let newText = div.innerText;
+                    let newText = textToCheck;
                     let captureGroups = [];
 
                     for (let i = 1; i < matches.length; i++) {

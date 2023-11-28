@@ -36,7 +36,7 @@ function updateRegex() {
     // Automatically check the 'Show capture groups' checkbox if the regex contains capture groups
     const hasCaptureGroups = /\(.*?\)/.test(regexInput);
     document.getElementById('capture-group-toggle').checked = hasCaptureGroups;
-    testRegex();
+    testRegex(true);
 }
 
 function cleanHighlight(element) {
@@ -66,7 +66,7 @@ function testRegex(defocused_div) {
     captureGroupsOutput.innerHTML = '';
 
     
-        const regex = new RegExp(regexInput);
+        const regex = new RegExp(regexInput,"g");
         const exampleDivs = document.querySelectorAll('.editable-content');
         exampleDivs.forEach((div, index) => {
             textToCheck = div.innerHTML;/*.replace(/<span class="highlight">|<\/span>/g, '');*/
@@ -79,7 +79,7 @@ function testRegex(defocused_div) {
                 div.classList.remove('match');
             }
             if(showCaptureGroups && div === defocused_div){
-                const matches = textToCheck.match(regex);
+                const matches = textToCheck.match(regex) || [];
                 console.log(matches)
 
                 if (matches) {

@@ -31,7 +31,7 @@ document.getElementById('example-inputs').addEventListener('click', function (ev
     }
   });
 
-//document.getElementById('regex-input').addEventListener('input', updateRegex);
+document.getElementById('regex-input').addEventListener('input', updateRegex);
 
 function updateRegex() {
     const regexInput = document.getElementById('regex-input').value;
@@ -134,7 +134,7 @@ function testRegex(defocused_div) {
 document.getElementById('capture-group-toggle').addEventListener('change', function() {
     // Get the current state of the checkbox
     const isChecked = this.checked;
-   // updateRegex();
+    testRegex(isChecked);
   
 // Find all radio buttons for match-mode and set their disabled property
 document.querySelectorAll('input[name="match-mode"]').forEach(radio => {

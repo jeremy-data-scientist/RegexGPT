@@ -111,7 +111,7 @@ function generateExamples() {
 
 // Initialization function
 function init() {
-    generateExamples();
+    //generateExamples();
     //populateFields();
 }
 

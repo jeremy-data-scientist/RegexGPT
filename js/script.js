@@ -15,7 +15,7 @@ function getQueryStringParams() {
 // Function to populate form fields from query string parameters
 function populateFields() {
     const { regex, examples } = getQueryStringParams();
-    document.getElementById('regex-input').value = regex || '';
+    document.getElementById('regex-input').innerHTML = regex || '';
     examples.forEach((example, index) => {
         if (example !== null) {
             document.getElementById('example' + (index + 1)).innerText = example;
@@ -23,27 +23,33 @@ function populateFields() {
     });
 }
 
-function updateAndTestRegex(){
-    updateRegex();
-    testRegex();
-}
 function updateRegex() {
-    const regexInput = document.getElementById('regex-input').value;
+    const regexInput = document.getElementById('regex-input').innerHTML;
     // Automatically check the 'Show capture groups' checkbox if the regex contains capture groups
     const hasCaptureGroups = /\(.*?\)/.test(regexInput);
-    document.getElementById('capture-group-toggle').checked = hasCaptureGroups;
-    document.getElementById('capture-group-toggle').dispatchEvent(new Event('change'));   // Initial call to set the correct state when the page loads
+    if(hasCaptureGroups){
+        document.getElementById('capture-group-toggle').checked = hasCaptureGroups;
+        document.getElementById('capture-group-toggle').dispatchEvent(new Event('change'));   // Initial call to set the correct state when the page loads
+    }
+    testRegex();
 }
 
-function cleanHighlight(element) {
+
+function cleanTextForRegex(element) {
+    function decodeHtmlEntities(html) {
+        var textArea = document.createElement('textarea');
+        textArea.innerHTML = html;
+        return textArea.value;
+    }
     // Remove span tags with the class 'highlight'
-    element.innerHTML = element.innerHTML.replace(/<span class="highlight">(.*?)<\/span>/g, '$1');
+    const temp=element.innerHTML.replace(/<span class="highlight">(.*?)<\/span>/g, '$1');
+    return(decodeHtmlEntities(temp));
 }
 
 function attachEditableEvents() {
-    document.querySelectorAll('.editable-content').forEach(div => {
+    document.querySelectorAll('.examples-to-check').forEach(div => {
         div.addEventListener('focus', function() {
-            cleanHighlight(this);
+            this.innerHTML = cleanTextForRegex(this);
         });
         div.addEventListener('blur', function() {
             testRegex(div); // Call testRegex when the div loses focus
@@ -61,74 +67,62 @@ function attachEditableEvents() {
         const isChecked = this.checked;
         testRegex(isChecked);
       
+        // Find all radio buttons for match-mode and set their disabled property
+        document.querySelectorAll('input[name="match-mode"]').forEach(radio => {
+            radio.disabled = !isChecked;
+        });
+    });
+
     // Find all radio buttons for match-mode and set their disabled property
     document.querySelectorAll('input[name="match-mode"]').forEach(radio => {
-        radio.disabled = !isChecked;
-    });
-    
-    // If the capture group toggle is turned off, reset the match mode to default
-    if (!isChecked) {
-        document.querySelector('input[name="match-mode"][value="first"]').checked = true;
-    }
+        radio.addEventListener('change', function() {
+            // Get the current state of the checkbox
+            const isChecked = this.checked;
+            testRegex(document.getElementById('capture-group-toggle').checked);
+        });
     });
 }
 
-// function replaceNthMatch(originalText, regex, nth, replacement) {
-//     let count = 0; // Initialize counter
-  
-//     return originalText.replace(regex, (match) => {
-//       count++; // Increment counter for each match
-//       if (count === nth) {
-//         // When the nth match is found, replace with the replacement text
-//         return replacement(match);
-//       }
-//       return match; // Otherwise, return the match as is
-//     });
-//   }
-  
-//   // Example usage:
-//   let text = "The quick brown fox jumps over the lazy dog";
-//   let regexToMatch = /(\b\w+\b)/g; // Regex to match each word
-  
-//   // Replace the 4th word with a highlight span
-//   let nth = 4;
-//   let newText = replaceNthMatch(text, regexToMatch, nth, (match) => `<span class="highlight">${match}</span>`);
-  
 
 function testRegex(defocused_div) {
-    const regexInput = document.getElementById('regex-input').value;
+    const regexInputDiv = document.getElementById('regex-input');
+    const regexToUse = cleanTextForRegex(regexInputDiv);
     const showCaptureGroups = document.getElementById('capture-group-toggle').checked;
     const captureGroupsOutput = document.getElementById('capture-groups-output');
     const currentlyFocusedElement = document.activeElement;
     captureGroupsOutput.innerHTML = '';
-    const regex = new RegExp(regexInput,getMatchMode());
-
-        const exampleDivs = document.querySelectorAll('.editable-content');
-        exampleDivs.forEach((div, index) => {
-            textToCheck = div.innerHTML.replace(/<span class="highlight">(.*?)<\/span>/g, '$1');/*.replace(/<span class="highlight">|<\/span>/g, '');*/
-            console.log(textToCheck)
+    const regex = new RegExp(regexToUse,getMatchMode());
+    const exampleDivs = document.querySelectorAll('.examples-to-check');
+    if(regexToUse==="" || regexToUse===null){
+        exampleDivs.forEach((div) => {
+            div.classList.remove('match');
+            div.classList.add('disabled');
+        })
+        regexInputDiv.classList.add('missing');
+        return(null)
+    }
+    regexInputDiv.classList.remove('missing');
+    exampleDivs.forEach((div, index) => {
+            div.classList.remove('disabled');
+            textToCheck = cleanTextForRegex(div);
             try {
-            const any_match = regex.test(textToCheck);
-            if (any_match) {
-                div.classList.add('match');
-            } else {
-                div.classList.remove('match');
-            }
-            if(showCaptureGroups && (defocused_div===true || div === defocused_div)){
-                //cleanHighlight(div)
-
                 const matches = textToCheck.match(regex) || [];
-                console.log(matches)
 
-                if (matches) {
+                if (matches.length===0) {
+                    div.classList.remove('match');
+                    return(null);
+                } 
+
+                div.classList.add('match');
+
+                if(showCaptureGroups && (defocused_div===true || div === defocused_div)){
+
                     // Highlight capture groups
                     let captureGroups = [];
 
                     function highlightAllMatches(originalText, regex) {
                         return originalText.replace(regex, (match) => `<span class="highlight">${match}</span>`);
-                      }
-
-                    }
+                        }
 
                     let highlightedText = highlightAllMatches(textToCheck, regex);
 
@@ -137,11 +131,11 @@ function testRegex(defocused_div) {
                     const captureGroupDiv = document.createElement('div');
                     captureGroupDiv.textContent = `Example ${index + 1} capture groups: ${matches.join(', ')}`;
                     captureGroupsOutput.appendChild(captureGroupDiv);
+                }
+            } catch (e) {
+                div.classList.remove('match');
+                console.error(e);/*'Invalid regex pattern. '*/
             }
-        } catch (e) {
-            div.classList.remove('match');
-            console.error(e);/*'Invalid regex pattern. '*/
-        }
         });
 }
 
@@ -155,8 +149,7 @@ function init() {
     populateFields();
     // Call this function to initialize the event listeners
     attachEditableEvents();
-
-    updateAndTestRegex();
+    updateRegex();
 }
 
 // Call the init function on page load

@@ -24,14 +24,14 @@ function populateFields() {
 }
 
 function updateRegex() {
-    const regexInput = document.getElementById('regex-input').innerHTML;
+    //const regexInput = document.getElementById('regex-input').innerHTML;
     // Automatically check the 'Show capture groups' checkbox if the regex contains capture groups
-    const hasCaptureGroups = /\(.*?\)/.test(regexInput);
-    if(hasCaptureGroups){
-        document.getElementById('capture-group-toggle').checked = hasCaptureGroups;
-        document.getElementById('capture-group-toggle').dispatchEvent(new Event('change'));   // Initial call to set the correct state when the page loads
-    }
-    testRegex();
+    //const hasCaptureGroups = /\(.*?\)/.test(regexInput);
+    //if(hasCaptureGroups){
+    //    document.getElementById('capture-group-toggle').checked = hasCaptureGroups;
+    document.getElementById('capture-group-toggle').dispatchEvent(new Event('change'));   // Initial call to set the correct state when the page loads
+    //}
+    testRegex(true);
 }
 
 
@@ -55,16 +55,19 @@ function attachEditableEvents() {
             testRegex(div); // Call testRegex when the div loses focus
         });
     });
-    document.getElementById('example-inputs').addEventListener('click', function (event) {
-        if (event.target.type === 'checkbox') {
-        // Check if the clicked element is a checkbox
-            event.preventDefault(); // Prevent checkbox change
-        }
-    });
 
-    document.getElementById('capture-group-toggle').addEventListener('change', function() {
+    document.getElementById('capture-group-toggle').addEventListener('change', function(event) {
+        regexInput = document.getElementById('regex-input').innerHTML;
+        hasCaptureGroups = /\(.*?\)/.test(regexInput);
+        if(hasCaptureGroups){
+            event.preventDefault(); 
+            document.getElementById('capture-group-toggle').checked = true;
+            this.disabled=true;
+        } else{
+            this.disabled=false;
+        }
         // Get the current state of the checkbox
-        const isChecked = this.checked;
+        const isChecked = this.checked;        
         testRegex(isChecked);
       
         // Find all radio buttons for match-mode and set their disabled property
@@ -83,38 +86,54 @@ function attachEditableEvents() {
     });
 }
 
+function clearExamples(div,disable_divs=true){
+    div.classList.remove('match');
+    if(disable_divs){
+        div.classList.add('disabled');
+    }
+    div.innerHTML=cleanTextForRegex(div); //remove higlighting
+    console.log(`${div.id}-output`);
+    document.getElementById(`${div.id}-output`).textContent=""; //remove capture groups
+}
 
 function testRegex(defocused_div) {
     const regexInputDiv = document.getElementById('regex-input');
     const regexToUse = cleanTextForRegex(regexInputDiv);
     const showCaptureGroups = document.getElementById('capture-group-toggle').checked;
-    const captureGroupsOutput = document.getElementById('capture-groups-output');
     const currentlyFocusedElement = document.activeElement;
-    captureGroupsOutput.innerHTML = '';
-    const regex = new RegExp(regexToUse,getMatchMode());
     const exampleDivs = document.querySelectorAll('.examples-to-check');
+
     if(regexToUse==="" || regexToUse===null){
-        exampleDivs.forEach((div) => {
-            div.classList.remove('match');
-            div.classList.add('disabled');
-        })
+        exampleDivs.forEach(clearExamples);
         regexInputDiv.classList.add('missing');
-        return(null)
+        return(null);
     }
+    let regex = null;
+
+    try{
+        regex = new RegExp(regexToUse,getMatchMode());
+    } catch(e){
+        console.log(e)
+        exampleDivs.forEach(clearExamples);
+        regexInputDiv.classList.add('error');
+        return(null);
+    }
+
     regexInputDiv.classList.remove('missing');
-    exampleDivs.forEach((div, index) => {
+    exampleDivs.forEach((div) => {
             div.classList.remove('disabled');
             textToCheck = cleanTextForRegex(div);
             try {
                 const matches = textToCheck.match(regex) || [];
+                const captureGroupDiv = document.getElementById(`${div.id}-output`);
 
                 if (matches.length===0) {
-                    div.classList.remove('match');
+                    clearExamples(div,disable_divs=false);
                     return(null);
                 } 
 
                 div.classList.add('match');
-
+                console.log(defocused_div);
                 if(showCaptureGroups && (defocused_div===true || div === defocused_div)){
 
                     // Highlight capture groups
@@ -127,10 +146,11 @@ function testRegex(defocused_div) {
                     let highlightedText = highlightAllMatches(textToCheck, regex);
 
                     div.innerHTML = highlightedText;
-
-                    const captureGroupDiv = document.createElement('div');
-                    captureGroupDiv.textContent = `Example ${index + 1} capture groups: ${matches.join(', ')}`;
-                    captureGroupsOutput.appendChild(captureGroupDiv);
+                    if(getMatchMode()==="g"){
+                        captureGroupDiv.textContent = `${matches.join(', ')}`;
+                    } else {
+                        captureGroupDiv.textContent = '';
+                    }
                 }
             } catch (e) {
                 div.classList.remove('match');

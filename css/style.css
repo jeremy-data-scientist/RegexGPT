@@ -113,18 +113,15 @@ footer p {
 	white-space: pre-wrap;
 }
 
-.editable-content:focus {
-    border-color: #007bff; /* Highlight border color when focused */
-    box-shadow: inset 0 1px 2px rgba(0,0,0,0.1), 0 0 8px rgba(0,123,255,0.5); /* More prominent shadow on focus */
-}
   /* Style for input fields when there's a regex match */
 .match {
-    border: 1px solid green;
+    outline: 2px solid green;
     background-color: #e6ffe6; /* Light green background */
   }
 .missing {
-    border: 2px solid rgb(60, 60, 60);
-    background-color: rgb(231, 226, 116); /* Light green background */
+	border-color: #007bff;
+    outline: 2px solid #007bff;
+    background-color: rgba(76, 155, 240, 0.386); /* Light green background */
 	box-shadow: inset 0 1px 2px rgba(0,0,0,0.1), 0 0 8px rgba(0,123,255,0.5);
   }
 .editable-content:focus {

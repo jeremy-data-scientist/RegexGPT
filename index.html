@@ -11,19 +11,20 @@
         <header>
             <h1>Simple Regex Tester</h1>
         </header>
+
         <main>
+            <!-- Regex Input Section -->
             <div class="form-group">
-                <label>Enter your regex:</label>
-                <div class="editable-content" id="regex-input" name="regex"  contenteditable="true" id="example1" oninput="updateRegex()"></div>
-            </div>
-            <div class="form-group">
+                <label for="regex-input">Enter your regex:</label>
+                <div class="editable-content" id="regex-input" contenteditable="true" placeholder="e.g., ^[a-z0-9]+@[a-z]+\.[a-z]{2,3}$" oninput="updateRegex()"></div>
+                <div id="error-message" class="error-message"></div>
                 <label><input type="checkbox" id="capture-group-toggle"> Show capture groups</label>
                 <div class="match-options">
                     <label>
-                      <input type="radio" name="match-mode" value="all" checked disabled> Match All
+                      <input type="radio" name="match-mode" value="all" disabled> Match All
                     </label>
                     <label>
-                      <input type="radio" name="match-mode" value="first" disabled> Match First
+                      <input type="radio" name="match-mode" value="first" checked disabled> Match First
                     </label>
                   </div>
             </div>
@@ -39,6 +40,7 @@
                 <div class="capture-groups-output" id="example4-output"></div>
             </div>
         </main>
+
         <footer>
             <p></p>
         </footer>

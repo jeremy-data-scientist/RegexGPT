@@ -20,20 +20,13 @@ function setupFromQueryString() {
 
 // Clean text for regex processing
 function removeHighlighting(element) {
-    // function decodeHtmlEntities(html) {
-    //     var textArea = document.createElement('textarea');
-    //     textArea.innerHTML = html;
-    //     return textArea.value;
-    // }
     const elementClone = element.cloneNode(true);
     const innerSpans = elementClone.querySelectorAll('span.highlight, span.highlight-capture');
     innerSpans.forEach((innerSpan) => {
         // Replace each inner <span> with its content
         innerSpan.parentNode.replaceChild(document.createTextNode(innerSpan.textContent), innerSpan);
       });
-    // let temp = element.innerHTML.replace(/<span class="highlight">(.*?)<\/span>/g, '$1');
-    // temp = temp.replace(/<span class="highlight-capture">(.*?)<\/span>/g, '$1');
-    return elementClone.innerHTML;//decodeHtmlEntities(temp);
+    return elementClone.innerHTML;
 }
 
 // Attach events to editable content
@@ -43,32 +36,10 @@ function attachEditableEvents() {
             this.innerHTML = removeHighlighting(this);
         });
         div.addEventListener('blur', function () {
-            testRegex(div); // Call testRegex when the div loses focus
+            testRegex(div,true); // Call testRegex when the div loses focus
         });
     });
 
-    // document.getElementById('capture-group-toggle').addEventListener('change', function (event) {
-    //     regexInput = document.getElementById('regex-input').innerHTML;
-    //     hasCaptureGroups = /\(.*?\)/.test(regexInput);
-    // if (hasCaptureGroups) {
-    //         event.preventDefault();
-    //         document.getElementById('capture-group-toggle').checked = true;
-    //         this.disabled = true;
-    //     } else {
-    //         this.disabled = false;
-    //     }
-    //     const isChecked = this.checked;
-    //     testRegex(isChecked);
-    //     document.querySelectorAll('input[name="match-mode"]').forEach(radio => {
-    //         radio.disabled = !isChecked;
-    //     });
-    // });
-
-    // document.querySelectorAll('input[name="match-mode"]').forEach(radio => {
-    //     radio.addEventListener('change', function () {
-    //         testRegex(document.getElementById('capture-group-toggle').checked);
-    //     });
-    // });
 }
 
 // Clear example inputs
@@ -80,9 +51,7 @@ function clearExamples(div, disable_divs = true, remove_highlighting = true) {
     if(remove_highlighting){
         div.innerHTML = removeHighlighting(div);
     }
-    // document.getElementById(`${div.id}-output`).textContent = "";
 }
-
 
 function encodeHtmlSpecialChars(str) {
     return str.replace(/</g, '&lt;').replace(/>/g, '&gt;');
@@ -94,7 +63,6 @@ function highlightText(str, regex) {
     regex.lastIndex = 0;
     while (true) {
         const matches = regex.exec(str);
-        console.log(matches);
         if (!matches) break;
 
         const fullMatch = matches[0];
@@ -132,19 +100,20 @@ function highlightText(str, regex) {
 
 
 // Test regex against examples
-function testRegex(current_div="all",perform_highlighting=true) {
+function testRegex(current_div,perform_highlighting) {
     const regexInputDiv = document.getElementById('regex-input');
-    const regexToUse = regexInputDiv.innerHTML;//removeHighlighting(regexInputDiv);
-    const showCaptureGroups = true;//document.getElementById('capture-group-toggle').checked;
+    const regexToUse = regexInputDiv.innerHTML;
+    const showCaptureGroups = true;
     
     if(current_div==="all"){
         exampleDivs = document.querySelectorAll('.examples-to-check');
     } else {
+        console.log(current_div);
         exampleDivs = [document.getElementById(current_div.id)];
     }
 
 if (regexToUse === "" || regexToUse === null) {
-    exampleDivs.forEach(clearExamples);
+    exampleDivs.forEach((item) => {clearExamples(item, true, true)});
     regexInputDiv.classList.add('missing');
     return null;
 }
@@ -153,21 +122,22 @@ let regex = null;
 try {
     regex = new RegExp(regexToUse, getMatchMode());
     regexInputDiv.classList.remove('error');
+    clearError();
 } catch (e) {
     console.log(e);
-    exampleDivs.forEach(clearExamples);
+    console.log(exampleDivs);
+    exampleDivs.forEach((item) => {clearExamples(item, true, true)});
     regexInputDiv.classList.add('error');
+    displayError(e);
     return null;
 }
-
 regexInputDiv.classList.remove('missing');
 exampleDivs.forEach((div) => {
-    div.classList.remove('disabled');
+    //console.log("oh no");
+    //div.classList.remove('disabled');
     textToCheck = removeHighlighting(div);
     try {
-        // const matches = textToCheck.match(regex) || [];
         const any_match = regex.test(textToCheck);
-        // const captureGroupDiv = document.getElementById(`${div.id}-output`);
 
         if (!any_match) {
             clearExamples(div, false, current_div==="all");
@@ -175,10 +145,8 @@ exampleDivs.forEach((div) => {
         }
         div.classList.add('match');
         if (showCaptureGroups && perform_highlighting) {
-            let highlightedText = highlightText(textToCheck,regex);//, ((_, captureGroup) => `<span class="highlight">${captureGroup}</span>`));
+            let highlightedText = highlightText(textToCheck,regex);
             div.innerHTML = highlightedText;
-            // captureGroupDiv.textContent = '';
-            // captureGroupDiv.textContent = `${matches.join(', ')}`;
         }
     } catch (e) {
         console.log(e);
@@ -212,7 +180,7 @@ function getMatchMode() {
 function init() {
     setupFromQueryString();
     attachEditableEvents();
-    testRegex();
+    testRegex("all",true);
 }
 
 // Initialize the tool when the page loads

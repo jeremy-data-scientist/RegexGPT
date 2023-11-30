@@ -147,11 +147,3 @@ footer p {
 	opacity: 0.6; /* Reduce opacity to make it appear disabled */
   }
 
-.capture-groups-output {
-    font-size: 12px; /* Small font size */
-    color: #999; /* Light grey text color */
-    margin-bottom: 15px; /* Gap between the text and the box above */
-    position: relative; /* Relative positioning for absolute child elements */
-	height: 1em; /* Set a fixed height, adjust as needed */
-    overflow: hidden; /* Hide any overflowing content */
-}

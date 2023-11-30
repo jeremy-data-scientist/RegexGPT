@@ -16,28 +16,29 @@
             <!-- Regex Input Section -->
             <div class="form-group">
                 <label for="regex-input">Enter your regex:</label>
-                <div class="editable-content" id="regex-input" contenteditable="true" placeholder="e.g., ^[a-z0-9]+@[a-z]+\.[a-z]{2,3}$" oninput="updateRegex()"></div>
+                <div class="editable-content" id="regex-input" contenteditable="true" placeholder="e.g., ^[a-z0-9]+@[a-z]+\.[a-z]{2,3}$" oninput="testRegex()"></div>
                 <div id="error-message" class="error-message"></div>
-                <label><input type="checkbox" id="capture-group-toggle"> Show capture groups</label>
+                <!--<label><input type="checkbox" id="capture-group-toggle"> Show capture groups</label>
                 <div class="match-options">
                     <label>
-                      <input type="radio" name="match-mode" value="all" disabled> Match All
+                      <input type="radio" name="match-mode" value="all" checked disabled> Match All
                     </label>
                     <label>
-                      <input type="radio" name="match-mode" value="first" checked disabled> Match First
+                      <input type="radio" name="match-mode" value="first" disabled> Match First
                     </label>
                   </div>
+                -->
             </div>
             <div class="form-group" id="example-inputs">
                 <label>Test your regex:</label>
-                <div class="editable-content examples-to-check" contenteditable="true" id="example1" oninput="testRegex()">example text to check</div>
-                <div class="capture-groups-output" id="example1-output"></div>
-                <div class="editable-content examples-to-check" contenteditable="true" id="example2" oninput="testRegex()"></div>
-                <div class="capture-groups-output" id="example2-output"></div>
-                <div class="editable-content examples-to-check" contenteditable="true" id="example3" oninput="testRegex()"></div>
-                <div class="capture-groups-output" id="example3-output"></div>
-                <div class="editable-content examples-to-check" contenteditable="true" id="example4" oninput="testRegex()"></div>
-                <div class="capture-groups-output" id="example4-output"></div>
+                <div class="editable-content examples-to-check" contenteditable="true" id="example1" oninput="testRegex(this,false)">example text to check</div>
+                <!-- <div class="capture-groups-output" id="example1-output"></div> -->
+                <div class="editable-content examples-to-check" contenteditable="true" id="example2" oninput="testRegex(this,false)"></div>
+                <!-- <div class="capture-groups-output" id="example2-output"></div> -->
+                <div class="editable-content examples-to-check" contenteditable="true" id="example3" oninput="testRegex(this,false)"></div>
+                <!-- <div class="capture-groups-output" id="example3-output"></div> -->
+                <div class="editable-content examples-to-check" contenteditable="true" id="example4" oninput="testRegex(this,false)"></div>
+                <!-- <div class="capture-groups-output" id="example4-output"></div> -->
             </div>
         </main>
 

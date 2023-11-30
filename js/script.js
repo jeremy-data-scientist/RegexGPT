@@ -17,101 +17,131 @@ function setupFromQueryString() {
     });
 }
 
-// Update regex input and test regex
-function updateRegex() {
-    document.getElementById('capture-group-toggle').dispatchEvent(new Event('change'));
-    testRegex(true);
-}
 
 // Clean text for regex processing
-function cleanTextForRegex(element) {
-    function decodeHtmlEntities(html) {
-        var textArea = document.createElement('textarea');
-        textArea.innerHTML = html;
-        return textArea.value;
-    }
-    const temp = element.innerHTML.replace(/<span class="highlight">(.*?)<\/span>/g, '$1');
-    return decodeHtmlEntities(temp);
+function removeHighlighting(element) {
+    // function decodeHtmlEntities(html) {
+    //     var textArea = document.createElement('textarea');
+    //     textArea.innerHTML = html;
+    //     return textArea.value;
+    // }
+    const elementClone = element.cloneNode(true);
+    const innerSpans = elementClone.querySelectorAll('span.highlight, span.highlight-capture');
+    innerSpans.forEach((innerSpan) => {
+        // Replace each inner <span> with its content
+        innerSpan.parentNode.replaceChild(document.createTextNode(innerSpan.textContent), innerSpan);
+      });
+    // let temp = element.innerHTML.replace(/<span class="highlight">(.*?)<\/span>/g, '$1');
+    // temp = temp.replace(/<span class="highlight-capture">(.*?)<\/span>/g, '$1');
+    return elementClone.innerHTML;//decodeHtmlEntities(temp);
 }
 
 // Attach events to editable content
 function attachEditableEvents() {
     document.querySelectorAll('.examples-to-check').forEach(div => {
         div.addEventListener('focus', function () {
-            this.innerHTML = cleanTextForRegex(this);
+            this.innerHTML = removeHighlighting(this);
         });
         div.addEventListener('blur', function () {
             testRegex(div); // Call testRegex when the div loses focus
         });
     });
 
-    document.getElementById('capture-group-toggle').addEventListener('change', function (event) {
-        regexInput = document.getElementById('regex-input').innerHTML;
-        hasCaptureGroups = /\(.*?\)/.test(regexInput);
-    if (hasCaptureGroups) {
-            event.preventDefault();
-            document.getElementById('capture-group-toggle').checked = true;
-            this.disabled = true;
-        } else {
-            this.disabled = false;
-        }
-        const isChecked = this.checked;
-        testRegex(isChecked);
-        document.querySelectorAll('input[name="match-mode"]').forEach(radio => {
-            radio.disabled = !isChecked;
-        });
-    });
+    // document.getElementById('capture-group-toggle').addEventListener('change', function (event) {
+    //     regexInput = document.getElementById('regex-input').innerHTML;
+    //     hasCaptureGroups = /\(.*?\)/.test(regexInput);
+    // if (hasCaptureGroups) {
+    //         event.preventDefault();
+    //         document.getElementById('capture-group-toggle').checked = true;
+    //         this.disabled = true;
+    //     } else {
+    //         this.disabled = false;
+    //     }
+    //     const isChecked = this.checked;
+    //     testRegex(isChecked);
+    //     document.querySelectorAll('input[name="match-mode"]').forEach(radio => {
+    //         radio.disabled = !isChecked;
+    //     });
+    // });
 
-    document.querySelectorAll('input[name="match-mode"]').forEach(radio => {
-        radio.addEventListener('change', function () {
-            testRegex(document.getElementById('capture-group-toggle').checked);
-        });
-    });
+    // document.querySelectorAll('input[name="match-mode"]').forEach(radio => {
+    //     radio.addEventListener('change', function () {
+    //         testRegex(document.getElementById('capture-group-toggle').checked);
+    //     });
+    // });
 }
 
 // Clear example inputs
-function clearExamples(div, disable_divs = true) {
+function clearExamples(div, disable_divs = true, remove_highlighting = true) {
     div.classList.remove('match');
     if (disable_divs) {
         div.classList.add('disabled');
     }
-    div.innerHTML = cleanTextForRegex(div);
-    document.getElementById(`${div.id}-output`).textContent = "";
+    if(remove_highlighting){
+        div.innerHTML = removeHighlighting(div);
+    }
+    // document.getElementById(`${div.id}-output`).textContent = "";
+}
+
+
+function encodeHtmlSpecialChars(str) {
+    return str.replace(/</g, '&lt;').replace(/>/g, '&gt;');
 }
 
 function highlightText(str, regex) {
-    return str.replace(regex, function(...args) {
-        const match = args[0];
-        const groups = args.slice(1, -2); // Capture groups are all arguments except the first and the last two
-        let result = '';
-        let lastIndex = 0;
-
-        regex.lastIndex = 0; // Reset lastIndex to ensure exec starts from the beginning
+    let result = '';
+    let cursor = 0;
+    regex.lastIndex = 0;
+    while (true) {
         const matches = regex.exec(str);
+        console.log(matches);
+        if (!matches) break;
 
-        if (matches) {
-            for (let i = 1; i < matches.length; i++) {
-                const group = matches[i];
-                const groupIndex = matches.index + match.indexOf(group, lastIndex);
-                result += match.substring(lastIndex, groupIndex) + '<span class="highlight">' + group + '</span>';
-                lastIndex = groupIndex + group.length;
+        const fullMatch = matches[0];
+        const fullMatchStart = matches.index;
+        const fullMatchEnd = fullMatchStart + fullMatch.length;
+
+        // Append the part of the string before the full match
+        result += encodeHtmlSpecialChars(str.slice(cursor, fullMatchStart)) + '<span class="highlight">';
+
+        let localCursor = 0;
+        for (let i = 1; i < matches.length; i++) {
+            const group = matches[i];
+            if (group !== undefined) {
+                const groupStart = fullMatch.indexOf(group, localCursor);
+                const groupEnd = groupStart + group.length;
+
+                // Append the part of the full match before the group and the group itself with surrounding '--'
+                result += encodeHtmlSpecialChars(fullMatch.slice(localCursor, groupStart)) + '<span class="highlight-capture">' + encodeHtmlSpecialChars(group) + '</span>';
+                localCursor = groupEnd;
             }
-
-            result += match.substring(lastIndex); // Append the rest of the string after the last capture group
         }
 
-        return result;
-    });
+        // Append the rest of the full match after the last group
+        result += encodeHtmlSpecialChars(fullMatch.slice(localCursor)) + '</span>';
+
+        // Update the cursor to the end of the full match
+        cursor = fullMatchEnd;
+    }
+
+    // Append the rest of the string after the last match
+    result += encodeHtmlSpecialChars(str.slice(cursor));
+
+    return result;
 }
 
 
-
 // Test regex against examples
-function testRegex(defocused_div) {
+function testRegex(current_div="all",perform_highlighting=true) {
     const regexInputDiv = document.getElementById('regex-input');
-    const regexToUse = cleanTextForRegex(regexInputDiv);
-    const showCaptureGroups = document.getElementById('capture-group-toggle').checked;
-    const exampleDivs = document.querySelectorAll('.examples-to-check');
+    const regexToUse = regexInputDiv.innerHTML;//removeHighlighting(regexInputDiv);
+    const showCaptureGroups = true;//document.getElementById('capture-group-toggle').checked;
+    
+    if(current_div==="all"){
+        exampleDivs = document.querySelectorAll('.examples-to-check');
+    } else {
+        exampleDivs = [document.getElementById(current_div.id)];
+    }
 
 if (regexToUse === "" || regexToUse === null) {
     exampleDivs.forEach(clearExamples);
@@ -124,6 +154,7 @@ try {
     regex = new RegExp(regexToUse, getMatchMode());
     regexInputDiv.classList.remove('error');
 } catch (e) {
+    console.log(e);
     exampleDivs.forEach(clearExamples);
     regexInputDiv.classList.add('error');
     return null;
@@ -132,29 +163,26 @@ try {
 regexInputDiv.classList.remove('missing');
 exampleDivs.forEach((div) => {
     div.classList.remove('disabled');
-    textToCheck = cleanTextForRegex(div);
-    //regex = new RegExp(regexToUse, getMatchMode());
+    textToCheck = removeHighlighting(div);
     try {
-        const matches = textToCheck.match(regex) || [];
-        console.log(textToCheck);
-        console.log(regex);
+        // const matches = textToCheck.match(regex) || [];
         const any_match = regex.test(textToCheck);
-        const captureGroupDiv = document.getElementById(`${div.id}-output`);
+        // const captureGroupDiv = document.getElementById(`${div.id}-output`);
 
         if (!any_match) {
-            clearExamples(div, false);
+            clearExamples(div, false, current_div==="all");
             return null;
         }
-
         div.classList.add('match');
-        if (showCaptureGroups && (defocused_div === true || div === defocused_div)) {
+        if (showCaptureGroups && perform_highlighting) {
             let highlightedText = highlightText(textToCheck,regex);//, ((_, captureGroup) => `<span class="highlight">${captureGroup}</span>`));
             div.innerHTML = highlightedText;
-            captureGroupDiv.textContent = '';
-            captureGroupDiv.textContent = `${matches.join(', ')}`;
+            // captureGroupDiv.textContent = '';
+            // captureGroupDiv.textContent = `${matches.join(', ')}`;
         }
     } catch (e) {
-        clearExamples(div, false);
+        console.log(e);
+        clearExamples(div, false, false);
     }
 });
 }
@@ -175,15 +203,16 @@ function clearError() {
 
 // Get the match mode from the radio buttons
 function getMatchMode() {
-    const matchMode = document.querySelector('input[name="match-mode"]:checked').value;
-    return matchMode === 'all' ? "g" : "";
+    // const matchMode = document.querySelector('input[name="match-mode"]:checked').value;
+    // return matchMode === 'all' ? "g" : "";
+    return ("g")
 }
 
 // Function to initialize the tool
 function init() {
     setupFromQueryString();
     attachEditableEvents();
-    updateRegex();
+    testRegex();
 }
 
 // Initialize the tool when the page loads

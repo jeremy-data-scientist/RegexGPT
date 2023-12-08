@@ -133,8 +133,7 @@ try {
 }
 regexInputDiv.classList.remove('missing');
 exampleDivs.forEach((div) => {
-    //console.log("oh no");
-    //div.classList.remove('disabled');
+    div.classList.remove('disabled');
     textToCheck = removeHighlighting(div);
     try {
         const any_match = regex.test(textToCheck);

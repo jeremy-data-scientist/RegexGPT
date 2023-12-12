@@ -12,8 +12,7 @@ function setupFromQueryString() {
         } else {
             if (matches[2]!=='') {
                 var checkboxes = document.querySelectorAll('.dropdown-options input[type=checkbox]');
-                var modifiers = matches[2].split('');       
-                console.log(modifiers);
+                var modifiers = matches[2].split(''); 
                 checkboxes.forEach(function(checkbox) {
                     if (modifiers.includes(checkbox.value)) {
                         checkbox.checked=true;

@@ -3,24 +3,32 @@ function setupFromQueryString() {
         const params = new URLSearchParams(window.location.search);
         const regexParam = params.get('r');
         const examplesParams = [params.get('e1'), params.get('e2'), params.get('e3'), params.get('e4')];
-        const modifierParam = params.get('o'); // 'o' is used for modifiers in the query string
-        
-        if (modifierParam) {
-            var checkboxes = document.querySelectorAll('.dropdown-options input[type=checkbox]');
-            var modifiers = modifierParam.split('');
-            
-            var selected = [];
-        
-            checkboxes.forEach(function(checkbox) {
-                if (modifiers.includes(checkbox.value)) {
-                    checkbox.checked=true;
+        //const modifierParam = params.get('o'); // 'o' is used for modifiers in the query string
+        let matches = regexParam.match(/^\/(.*?)\/([a-z]*)$/);
+        if (matches === null){
+            if (regexParam) {
+                document.getElementById('regex-input').innerText = regexParam;
+            }
+        } else {
+            if (matches[2]!=='') {
+                var checkboxes = document.querySelectorAll('.dropdown-options input[type=checkbox]');
+                var modifiers = matches[2].split('');       
+                console.log(modifiers);
+                checkboxes.forEach(function(checkbox) {
+                    if (modifiers.includes(checkbox.value)) {
+                        checkbox.checked=true;
+                        modifiers=modifiers.filter(item => item!==checkbox.value)
+                    }
+                });
+                if(modifiers.length>0){
+                    displayWarning('Warning: the modifiers ('+ modifiers.join(', ') +') are not handled and so have been ignored');
                 }
-            });
-        }
-        // Populate regex input
-        if (regexParam) {
-            document.getElementById('regex-input').innerText = regexParam;
-        }
+            }
+            // Populate regex input
+            if (regexParam) {
+                document.getElementById('regex-input').innerText = matches[1];
+            }
+    }
     
         // Populate example inputs
         examplesParams.forEach((example, index) => {
@@ -29,8 +37,10 @@ function setupFromQueryString() {
             }
         });
     }
-    
-    
+
+    function numNewLines(text) {
+        return (text.match(/\n/g) || []).length;
+    }
     // Clean text for regex processing
     function removeHighlighting(element) {
         const elementClone = element.cloneNode(true);
@@ -39,9 +49,33 @@ function setupFromQueryString() {
             // Replace each inner <span> with its content
             innerSpan.parentNode.replaceChild(document.createTextNode(innerSpan.textContent), innerSpan);
           });
+        elementClone.innerHTML=elementClone.innerHTML.replace('<br class="highlight-br">',"\n");
+        if(numNewLines(elementClone.innerHTML)=== 1){
+            return(elementClone.innerHTML.replace('\n', ''));
+        }
         return elementClone.innerHTML;
     }
     
+    function insertTextAtCursor(text) {
+        const sel = window.getSelection();
+        if (sel.rangeCount > 0) {
+            const range = sel.getRangeAt(0);
+            range.deleteContents(); // Delete any selected text
+    
+            // Create a text node and insert it at the cursor position
+            const textNode = document.createTextNode(text);
+            range.insertNode(textNode);
+    
+            // Create a new range and set its start and end
+            const newRange = document.createRange();
+            newRange.setStartAfter(textNode);
+            newRange.setEndAfter(textNode);
+    
+            // Update the selection with the new range
+            sel.removeAllRanges();
+            sel.addRange(newRange);
+        }
+    }
     // Attach events to editable content
     function attachEditableEvents() {
         document.querySelectorAll('.examples-to-check').forEach(div => {
@@ -49,8 +83,25 @@ function setupFromQueryString() {
                 this.innerHTML = removeHighlighting(this);
             });
             div.addEventListener('blur', function () {
+                if(numNewLines(div.innerHTML)>0 & div.innerHTML[div.innerHTML.length - 1]!=='\n'){
+                    div.innerHTML=div.innerHTML+'\n';
+                }
                 testRegex(div,true); // Call testRegex when the div loses focus
             });
+            
+            div.addEventListener('keydown', function(event) {
+                if (event.key === 'Enter') {
+                    event.preventDefault(); // Prevent the default Enter key behavior
+                    // console.log(hasSingleNewline(div.innerHTML));
+                    if(numNewLines(div.innerHTML)=== 0){
+                        insertTextAtCursor('\n\n');
+                    } else {
+                        insertTextAtCursor('\n'); // Insert a newline character at the cursor
+                    }
+                    testRegex(div,false);
+                }
+            });
+    
         });
     
     }
@@ -110,7 +161,12 @@ function setupFromQueryString() {
     
         // Append the rest of the string after the last match
         result += encodeHtmlSpecialChars(str.slice(cursor));
-    
+
+        if(numNewLines(result)>0){
+            result = result.replace('\n','<br class="highlight-br">');
+            // result = result + '<br class="highlight-br">'
+        }
+
         return result;
     }
     
@@ -175,12 +231,20 @@ function setupFromQueryString() {
         errorDiv.innerText = message;
         errorDiv.style.display = 'block';
     }
+    function displayWarning(message) {
+        const warningDiv = document.getElementById('warning-message');
+        warningDiv.innerText = message;
+        warningDiv.style.display = 'block';
+    }
     
     // Function to clear the error message
     function clearError() {
         const errorDiv = document.getElementById('error-message');
         errorDiv.innerText = '';
         errorDiv.style.display = 'none';
+        // const warningDiv = document.getElementById('warning-message');
+        // warningDiv.innerText = '';
+        // warningDiv.style.display = 'none';
     }
     
     // Get the match mode from the radio buttons
@@ -205,4 +269,3 @@ function setupFromQueryString() {
     
     // Initialize the tool when the page loads
     window.addEventListener('DOMContentLoaded', init);
-    

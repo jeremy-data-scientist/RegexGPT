@@ -22,16 +22,14 @@
                 <label for="regex-input">Enter your regex:</label>
                 <div class="editable-content" id="regex-input" contenteditable="true" placeholder="e.g., ^[a-z0-9]+@[a-z]+\.[a-z]{2,3}$" oninput="testRegex('all',true)"></div>
                 <div id="error-message" class="error-message"></div>
-                <!--<label><input type="checkbox" id="capture-group-toggle"> Show capture groups</label>
-                <div class="match-options">
-                    <label>
-                      <input type="radio" name="match-mode" value="all" checked disabled> Match All
-                    </label>
-                    <label>
-                      <input type="radio" name="match-mode" value="first" disabled> Match First
-                    </label>
-                  </div>
-                -->
+                <div class="custom-dropdown">
+                    <div class="dropdown-options">
+                        <label><input type="checkbox" value="g" onchange="testRegex('all',true)"> g (match&nbsp;all)</label>
+                        <label><input type="checkbox" value="i" onchange="testRegex('all',true)"> i (case&nbsp;insensitive)</label>
+                        <label><input type="checkbox" value="m" onchange="testRegex('all',true)"> m (multiline)</label>
+                        <label><input type="checkbox" value="u" onchange="testRegex('all',true)"> u (unicode)</label>
+                    </div>
+                </div>
             </div>
             <div class="form-group" id="example-inputs">
                 <label>Test your regex:</label>

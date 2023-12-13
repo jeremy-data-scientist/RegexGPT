@@ -81,6 +81,11 @@ function setupFromQueryString() {
             div.addEventListener('focus', function () {
                 this.innerHTML = removeHighlighting(this);
             });
+
+            div.addEventListener('touchstart', function () {
+                this.innerHTML = removeHighlighting(this);
+            });
+
             div.addEventListener('blur', function () {
                 if(numNewLines(div.innerHTML)>0 & div.innerHTML[div.innerHTML.length - 1]!=='\n'){
                     div.innerHTML=div.innerHTML+'\n';

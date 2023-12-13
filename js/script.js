@@ -75,8 +75,30 @@ function setupFromQueryString() {
             sel.addRange(newRange);
         }
     }
+
+    function interceptPaste(e){
+        // Prevent the default paste behavior
+        e.preventDefault();
+            
+        // Get the text from the clipboard
+        var text = (e.clipboardData || window.clipboardData).getData('text');
+    
+        // Insert the text at the current cursor position
+        if (document.getSelection) {
+            var sel = document.getSelection();
+            if (sel.rangeCount) {
+                var range = sel.getRangeAt(0);
+                range.deleteContents();
+                range.insertNode(document.createTextNode(text));
+            }
+        }
+    }
     // Attach events to editable content
     function attachEditableEvents() {
+        document.getElementById('regex-input').addEventListener("paste", function(e) {
+            interceptPaste(e);
+            testRegex('all',true);
+        });
         document.querySelectorAll('.examples-to-check').forEach(div => {
             div.addEventListener('focus', function () {
                  this.innerHTML = removeHighlighting(this);
@@ -84,6 +106,11 @@ function setupFromQueryString() {
 
             div.addEventListener('touchstart', function () {
                 this.innerHTML = removeHighlighting(this);
+            });
+
+            div.addEventListener("paste", function(e) {
+                interceptPaste(e);
+                testRegex(div,true);
             });
 
             div.addEventListener('blur', function () {

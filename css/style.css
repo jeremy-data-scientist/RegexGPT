@@ -84,7 +84,7 @@ header h1 {
 }
 
 .highlight-capture {
-    background-color: darkgreen;
+    background-color: rgba(0, 100, 0, 0.482);
     border-radius: 2px;
 }
 

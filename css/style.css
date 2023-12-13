@@ -130,6 +130,10 @@ footer p {
     outline: 2px solid green;
     background-color: #e6ffe6; /* Light green background */
   }
+.unmatch {
+    outline: 2px solid rgb(252, 147, 124);
+    background-color: #fcd9cc; 
+  }
 .missing {
 	border-color: #007bff;
     outline: 2px solid #007bff;

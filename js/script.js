@@ -79,7 +79,7 @@ function setupFromQueryString() {
     function attachEditableEvents() {
         document.querySelectorAll('.examples-to-check').forEach(div => {
             div.addEventListener('focus', function () {
-                this.innerHTML = removeHighlighting(this);
+                 this.innerHTML = removeHighlighting(this);
             });
 
             div.addEventListener('touchstart', function () {
@@ -114,7 +114,10 @@ function setupFromQueryString() {
     function clearExamples(div, disable_divs = true, remove_highlighting = true) {
         div.classList.remove('match');
         if (disable_divs) {
+            div.classList.remove('unmatch');
             div.classList.add('disabled');
+        } else {
+            div.classList.add('unmatch');
         }
         if(remove_highlighting){
             div.innerHTML = removeHighlighting(div);
@@ -208,13 +211,14 @@ function setupFromQueryString() {
     }
     regexInputDiv.classList.remove('missing');
     exampleDivs.forEach((div) => {
+        div.classList.remove('unmatch');
         div.classList.remove('disabled');
         textToCheck = removeHighlighting(div);
         try {
             const any_match = regex.test(textToCheck);
     
             if (!any_match) {
-                clearExamples(div, false, current_div==="all");
+                clearExamples(div, div.innerText==='', current_div==="all");
                 return null;
             }
             div.classList.add('match');
@@ -224,7 +228,7 @@ function setupFromQueryString() {
             }
         } catch (e) {
             console.log(e);
-            clearExamples(div, false, false);
+            clearExamples(div, div.innerText==='', false);
         }
     });
     }

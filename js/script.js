@@ -3,7 +3,7 @@ function setupFromQueryString() {
         const params = new URLSearchParams(window.location.search);
         const regexParam = params.get('r');
         const examplesParams = [params.get('e1'), params.get('e2'), params.get('e3'), params.get('e4')];
-        //const modifierParam = params.get('o'); // 'o' is used for modifiers in the query string
+        if (regexParam) {
         let matches = regexParam.match(/^\/(.*?)\/([a-z]*)$/);
         if (matches === null){
             if (regexParam) {
@@ -23,18 +23,18 @@ function setupFromQueryString() {
                     displayWarning('Warning: the modifiers ('+ modifiers.join(', ') +') are not handled and so have been ignored');
                 }
             }
-            // Populate regex input
-            if (regexParam) {
-                document.getElementById('regex-input').innerText = matches[1];
-            }
+        // Populate regex input
+        document.getElementById('regex-input').innerText = matches[1];
+            
+        }
     }
     
-        // Populate example inputs
-        examplesParams.forEach((example, index) => {
-            if (example) {
-                document.getElementById('example' + (index + 1)).innerText = example;
-            }
-        });
+    // Populate example inputs
+    examplesParams.forEach((example, index) => {
+        if (example) {
+            document.getElementById('example' + (index + 1)).innerText = example;
+        }
+    });
     }
 
     function numNewLines(text) {

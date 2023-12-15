@@ -302,5 +302,13 @@ function setupFromQueryString() {
         testRegex("all",true);
     }
     
+    function showPrivacyPopup() {
+        document.getElementById('privacyPolicyPopup').style.display = 'block';
+    }
+    
+    function closePrivacyPopup() {
+        document.getElementById('privacyPolicyPopup').style.display = 'none';
+    }
+
     // Initialize the tool when the page loads
     window.addEventListener('DOMContentLoaded', init);

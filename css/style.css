@@ -89,15 +89,27 @@ header h1 {
 }
 
 footer {
-    text-align: center;
+    display: flex;
+    justify-content: space-between; /* Aligns children to the far ends */
+    align-items: center; 
+    padding: 10px; 
     margin-top: 20px;
     padding-top: 20px;
     border-top: 1px solid #eee;
+    font-size: 14px;
+    color: grey; /* Or use a specific shade of grey like #808080 */
+    text-decoration: none; /* Optional: removes the underline from links */
+}
+footer a {
+    color: grey; /* Or use a specific shade of grey like #808080 */
+    text-decoration: none; /* Optional: removes the underline from links */
 }
 
-footer p {
-    color: #999;
+footer a:hover {
+    color: darkgrey; /* Optional: changes color on hover for better UI */
+    text-decoration: underline; /* Optional: adds underline on hover */
 }
+
 
 .match-options {
     margin-top: 10px;
@@ -131,8 +143,8 @@ footer p {
     background-color: #e6ffe6; /* Light green background */
   }
 .unmatch {
-    outline: 2px solid rgb(252, 147, 124);
-    background-color: #fcd9cc; 
+    outline: 2px solid rgb(171, 171, 171);
+    background-color: #ffffff; 
   }
 .missing {
 	border-color: #007bff;
@@ -143,7 +155,7 @@ footer p {
 .error {
 	  border-color: #ea3336;
 	  outline: 2px solid #ab1417;
-	  background-color: #eb6668; 
+	  background-color: #bebebe; 
 	  box-shadow: inset 0 1px 2px rgba(0,0,0,0.1), 0 0 8px rgba(255, 0, 0, 0.5);
 	}
 
@@ -185,3 +197,18 @@ footer p {
 .dropdown-options label:hover {
     background-color: #f4f4f4;
 }
+
+/* Popup background */
+.privacy-policy-popup {
+    display: none; /* Hidden by default */
+}
+
+/* Popup content container */
+.privacy-policy-content {
+    background: #fff;
+    padding: 20px;
+    border-radius: 5px;
+    font-size: 12px;
+    line-height: 1.5;
+}
+
